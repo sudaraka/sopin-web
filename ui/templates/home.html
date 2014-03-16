@@ -1,16 +1,29 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="stylesheet" href="/static/css/bootstrap.css" />
         <link rel="stylesheet" href="/static/css/bootstrap-theme.css" />
+        <link rel="stylesheet" href="/static/css/sopin.css" />
 
         <title>{{ site_title }}</title>
     </head>
     <body>
 
-        <div class="left-pane">
+        <header class="navbar navbar-static-top" role="navigation">
+            <a href="{% url 'homepage' %}" class="navbar-brand">{{ site_title }}</a>
+
+
+            <div class="btn-toolbar pull-right">
+                <a href="{% url 'item_maintenance' %}">Items</a>
+
+                <button class="reports">Reports</button>
+            </div>
+        </header>
+
+        <div class="left-pane col-xs-9">
             <div>
                 <h2>Shipping Rounds</h2>
 
@@ -22,7 +35,7 @@
             </div>
         </div>
 
-        <div class="right-pane">
+        <div class="right-pane col-xs-3">
             <div>
                 <h2>Items Needed</h2>
             </div>
@@ -32,13 +45,7 @@
             </div>
         </div>
 
-        <header>
-            <a href="{% url 'homepage' %}" class="navbar-brand">{{ site_title }}</a>
-
-            <a href="{% url 'item_maintenance' %}">Items</a>
-
-            <button class="reports">Reports</button>
-        </header>
+        <div class="clearfix"></div>
 
         <footer>
             {{ site_title }} {{ site_version }} &mdash; Copyright 2014 <a href="http://sudaraka.org/contact">Sudaraka Wijesinghe</a> &mdash; <a href="https://www.gnu.org/licenses/agpl.html">AGPL</a> version 3 or later &mdash; <a href="https://github.com/sudaraka/sopin-web" target="_new">source code</a>
