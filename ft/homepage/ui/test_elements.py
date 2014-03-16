@@ -22,7 +22,6 @@ states.
 
 """
 
-
 from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
@@ -33,11 +32,13 @@ class HomepageFirstVisit(FunctionalTestBase):
     """
     Test for homepage elements when user visit the site for the first time,
     with no user generated data.
+
     """
 
-    def test_homepage_elements(self):
+    def test_elements(self):
         """
         Verify all the required elements are available in homepage HTML.
+
         """
 
         # Shopper visit the site's homepage for the first time.
@@ -96,3 +97,11 @@ class HomepageFirstVisit(FunctionalTestBase):
                       ('https://github.com/sudaraka/sopin-web',
                        'https://bitbucket.com/sudaraka/sopin-web',
                        'http://git.sudaraka.org/sopin/sopin-web'))
+
+        link = footer.find_element_by_link_text('Sudaraka Wijesinghe')
+        self.assertEqual(link.get_attribute('href'),
+                         'http://sudaraka.org/contact')
+
+        link = footer.find_element_by_link_text('AGPL')
+        self.assertEqual(link.get_attribute('href'),
+                         'https://www.gnu.org/licenses/agpl.html')
