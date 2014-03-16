@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+
+        <title>{{ site_title }}</title>
+    </head>
+    <body>
+
+        <div class="left-pane">
+            <div>
+                <h2>Shipping Rounds</h2>
+
+                <button id="btn_new_round">New Round</button>
+            </div>
+
+            <div>
+                No rounds scheduled
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <div>
+                <h2>Items Needed</h2>
+            </div>
+
+            <div>
+                No items needed
+            </div>
+        </div>
+
+        <header>
+            <a href="{% url 'homepage' %}" class="navbar-brand">{{ site_title }}</a>
+
+            <a href="{% url 'item_maintenance' %}">Items</a>
+
+            <button class="reports">Reports</button>
+        </header>
+
+        <footer>
+            <ul>
+                <li>{{ site_title }} {{ site_version }}</li>
+                <li>Copyright 2014 Sudaraka Wijesinghe</li>
+                <li>AGPL version 3 or later</li>
+                <li><a href="https://github.com/sudaraka/sopin-web" target="_new">source code</a></li>
+            </ul>
+        </footer>
+
+    </body>
+</html>

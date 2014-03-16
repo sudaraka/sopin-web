@@ -1,4 +1,4 @@
-#  ui/views.py: UI views for the web site
+#  ui/urls.py: URL definition for the web site UI module
 #
 #  Copyright 2014 Sudaraka Wijesinghe <sudaraka.org/contact>
 #
@@ -16,16 +16,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-""" UI views """
+""" UI URL definitions """
 
-from django.shortcuts import render
+from django.conf.urls import patterns, url
 
-from app.settings import SITE_TITLE, VERSION
-
-
-def homepage_view(request):
-    """ Process homepage url '/' and render the template 'home.html' """
-
-    return render(request, 'home.html', {'site_title': SITE_TITLE,
-                                         'site_version': ('v%d.%d %s' %
-                                                          VERSION).strip()})
+urlpatterns = patterns(
+    'ui',
+    url(r'^$', 'views.homepage_view', name='homepage'),
+    url(r'^$', 'views.homepage_view', name='item_maintenance'),
+)
