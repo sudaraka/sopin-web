@@ -43,6 +43,7 @@ class HomepageFirstVisit(FunctionalTestBase):
 
         # Shopper visit the site's homepage for the first time.
         self.browser.get(self.server_url)
+        self.browser.set_window_size(1024, 768)
 
         # and see the following elements on the page.
         # 1. Browser title shows the application name
@@ -51,26 +52,30 @@ class HomepageFirstVisit(FunctionalTestBase):
         # 2. Header with the site title which is linked to homepage.
         header = self.browser.find_element_by_tag_name('header')
 
-        title_tag = header.find_element_by_link_text(SITE_TITLE)
+        title_tag = header.find_element_by_xpath('//a[contains(text(), %s)]' %
+                                                 SITE_TITLE)
         self.assertEqual(self.server_url + reverse('homepage'),
                          title_tag.get_attribute('href'))
 
         # 3. and links/buttons on the navigation bar to: a. Items link to
         #    master item list maintenance
-        item_link = header.find_element_by_link_text('Items')
+        item_link = \
+            header.find_element_by_xpath('//a[contains(text(), Items)]')
         self.assertEqual(self.server_url + reverse('item_maintenance'),
                          item_link.get_attribute('href'))
 
         #     b. Reports button with sub-links to each report
-        report_button = header.find_element_by_css_selector('button.reports')
-        self.assertEqual(report_button.text, 'Reports')
+        report_button = \
+            header.find_element_by_xpath('//a[contains(text(), Reports)]')
+        self.assertEqual(self.server_url + '/',
+                         report_button.get_attribute('href'))
 
-        # 4. Page have an area with the sub-heading "Shipping Rounds" which is
+        # 4. Page have an area with the sub-heading "Shopping Rounds" which is
         #    empty at the time and showing message "No rounds scheduled". There
         #    is a "New Round" button in this area.
         area1 = self.browser.find_element_by_class_name('left-pane')
-        self.assertEqual('Shipping Rounds',
-                         area1.find_element_by_tag_name('h2').text)
+        self.assertEqual('Shopping Rounds',
+                         area1.find_element_by_tag_name('h3').text)
         self.assertIn('No rounds scheduled', area1.text)
         self.assertEqual('New Round',
                          area1.find_element_by_id('btn_new_round').text)
@@ -78,8 +83,8 @@ class HomepageFirstVisit(FunctionalTestBase):
         # 5. There is another section with the sub-heading "Items Needed" that
         #    show the message "No items needed".
         area2 = self.browser.find_element_by_class_name('right-pane')
-        self.assertEqual('Items Needed',
-                         area2.find_element_by_tag_name('h2').text)
+        self.assertEqual('Available Items',
+                         area2.find_element_by_tag_name('h3').text)
         self.assertIn('No items needed', area2.text)
 
         # 6. Footer shows the application name, version, copyright and license

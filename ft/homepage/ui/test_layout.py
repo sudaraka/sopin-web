@@ -40,6 +40,7 @@ class HomepageFirstVisit(FunctionalTestBase):
 
         # Shopper visit the site's homepage for the first time.
         self.browser.get(self.server_url)
+        self.browser.set_window_size(1024, 768)
         viewport = self.browser.get_window_size()
 
         # and notices following areas in the home page
@@ -52,10 +53,10 @@ class HomepageFirstVisit(FunctionalTestBase):
         self.assertEqual(
             navbar.find_element_by_class_name('navbar-brand').location['x'], 0)
 
-        #   b. and set of buttons aligned to right edge
-        toolbar = navbar.find_element_by_class_name('btn-toolbar')
-        self.assertEqual(toolbar.location['x'], viewport['width'] -
-                         toolbar.size['width'])
+        #   b. and set of links aligned to right edge
+        toolbar = navbar.find_element_by_class_name('navbar-nav')
+        self.assertAlmostEqual(toolbar.location['x'], viewport['width'] -
+                               toolbar.size['width'], delta=10)
 
         # 2. Tow columns side-by-side in middle of the page, where right column
         #    is about 25% of the page width and left column filling the rest.
@@ -73,4 +74,4 @@ class HomepageFirstVisit(FunctionalTestBase):
         # 3. Footer at the bottom of the page with single line of text
         footer = self.browser.find_element_by_tag_name('footer')
         self.assertEqual(footer.location['x'], 0)
-        self.assertAlmostEqual(footer.size['height'], 20, delta=5)
+        self.assertAlmostEqual(footer.size['height'], 49, delta=5)
