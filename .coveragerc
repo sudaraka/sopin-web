@@ -1,0 +1,9 @@
+# .coveragerc: Test "coverage" configuration
+
+[run]
+branch = True
+data_file = ../var/coverage/data
+omit = */site-packages/*, */manage.py, */tests/*, */ft/*
+
+[html]
+directory = ../var/coverage
