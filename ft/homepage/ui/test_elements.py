@@ -52,22 +52,19 @@ class HomepageFirstVisit(FunctionalTestBase):
         # 2. Header with the site title which is linked to homepage.
         header = self.browser.find_element_by_tag_name('header')
 
-        title_tag = header.find_element_by_xpath('//a[contains(text(), %s)]' %
-                                                 SITE_TITLE)
+        title_tag = header.find_element_by_partial_link_text(SITE_TITLE)
         self.assertEqual(self.server_url + reverse('homepage'),
                          title_tag.get_attribute('href'))
 
         # 3. and links/buttons on the navigation bar to: a. Items link to
         #    master item list maintenance
-        item_link = \
-            header.find_element_by_xpath('//a[contains(text(), Items)]')
+        item_link = header.find_element_by_partial_link_text('Items')
         self.assertEqual(self.server_url + reverse('item_maintenance'),
                          item_link.get_attribute('href'))
 
         #     b. Reports button with sub-links to each report
-        report_button = \
-            header.find_element_by_xpath('//a[contains(text(), Reports)]')
-        self.assertEqual(self.server_url + '/',
+        report_button = header.find_element_by_partial_link_text('Reports')
+        self.assertEqual(self.server_url + '/#',
                          report_button.get_attribute('href'))
 
         # 4. Page have an area with the sub-heading "Shopping Rounds" which is
