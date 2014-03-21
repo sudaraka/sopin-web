@@ -58,8 +58,8 @@ class HomepageFirstVisit(FunctionalTestBase):
                          area1.find_element_by_id('btn_new_round').text)
 
         # 3. There is another section with the sub-heading "Items Needed" that
-        #    show the message "No items needed".
+        #    show the message "No items available".
         area2 = self.browser.find_element_by_class_name('right-pane')
         self.assertEqual('Available Items',
                          area2.find_element_by_tag_name('h3').text)
-        self.assertIn('No items needed', area2.text)
+        self.assertIn('No items available', area2.text)
