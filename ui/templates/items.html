@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css" />
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css" />
+        <link rel="stylesheet" href="/static/css/sopin.css" />
+
+        <title>{{ site_title }}</title>
+    </head>
+    <body>
+
+        <header class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a href="{% url 'homepage' %}" class="navbar-brand">
+                        <i class="glyphicon glyphicon-shopping-cart"></i>
+                        {{ site_title }}
+                    </a>
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="{% url 'item_maintenance' %}">
+                                <i class="glyphicon glyphicon-list-alt"></i>
+                                Items
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-stats"></i>
+                                Reports <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Monthly Purchase</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row">
+
+                <div class="page-header">
+                    <h3 class="col-xs-10">Item Maintenance</h3>
+
+                    <button type="button" id="btn_new_item" class="btn btn-success pull-right">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                        <span class="hidden-xs hidden-sm">Add New Item</span>
+                    </button>
+
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="items-table">
+                    No items available
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="hidden-xs">
+            <strong>{{ site_title }} {{ site_version }}</strong> &mdash; Copyright 2014 <a href="http://sudaraka.org/contact">Sudaraka Wijesinghe</a> &mdash; <a href="https://www.gnu.org/licenses/agpl.html">AGPL</a> version 3 or later &mdash; <a href="https://github.com/sudaraka/sopin-web" target="_new">source code</a>
+        </footer>
+
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/bootstrap.js"></script>
+
+    </body>
+</html>

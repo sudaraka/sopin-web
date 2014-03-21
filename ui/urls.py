@@ -23,6 +23,6 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns(
     'ui',
     url(r'^$', 'views.homepage_view', name='homepage'),
-    url(r'^item-maintenance/$', 'views.homepage_view',
+    url(r'^item-maintenance/$', 'views.item_maintenance_view',
         name='item_maintenance'),
 )

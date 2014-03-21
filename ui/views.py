@@ -29,3 +29,16 @@ def homepage_view(request):
     return render(request, 'home.html', {'site_title': SITE_TITLE,
                                          'site_version': ('v%d.%d %s' %
                                                           VERSION).strip()})
+
+
+def item_maintenance_view(request):
+    """
+    Process items maintenance url '/item-maintenance' and render the template
+    'items.html'
+
+    """
+
+    return render(request, 'items.html', {'site_title':
+                                          SITE_TITLE + ' - Item Maintenance',
+                                          'site_version': ('v%d.%d %s' %
+                                                           VERSION).strip()})
