@@ -39,11 +39,8 @@ class HomepageFirstVisit(FunctionalTestBase):
 
         """
 
-        # Shopper visit the site's homepage for the first time.
-        self.browser.get(self.server_url)
-        self.browser.set_window_size(1024, 768)
-
-        # and click on the "Items" link on the main navigation bar
+        # Shopper visit the site's homepage for the first time, and click on
+        # the "Items" link on the main navigation bar
         self.browser.find_element_by_partial_link_text('Items').click()
 
         self.assertEqual(self.server_url + reverse('item_maintenance'),

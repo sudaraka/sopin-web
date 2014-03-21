@@ -21,8 +21,11 @@
 import sys
 
 from django.test import LiveServerTestCase
+from django.core.urlresolvers import reverse
 
 from selenium import webdriver
+
+from app.settings import SITE_TITLE, VERSION
 
 
 class FunctionalTestBase(LiveServerTestCase):
@@ -30,6 +33,10 @@ class FunctionalTestBase(LiveServerTestCase):
     Base functional test class that all other functional test classes should
     derived from.
     """
+
+    # When test_uri contains a non None value, browser will be navigate to
+    # server_url + test_uri.
+    test_uri = None
 
     @classmethod
     def setUpClass(cls):
@@ -56,8 +63,85 @@ class FunctionalTestBase(LiveServerTestCase):
 
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
+        self.browser.set_window_size(1024, 768)
+
+        url = self.server_url
+
+        if self.test_uri is not None:
+            url += self.test_uri
+
+        self.browser.get(url)
 
     def tearDown(self):
         """ Cleanup test client environment after test """
 
         self.browser.quit()
+
+    def site_header_elements(self, browser_title=''):
+        """
+        Check if current browser page content contains the site header and all
+        common components. Returns the header webelement to the caller after
+        initial tests.
+
+        """
+
+        # 1. Browser title shows the application name and "Item Maintenance"
+        title = SITE_TITLE
+        if 0 < len(browser_title):
+            title += ' - ' + browser_title
+
+        self.assertIn(title, self.browser.title)
+
+        # 2. Header with the site title which is linked to homepage.
+        header = self.browser.find_element_by_tag_name('header')
+
+        title_tag = header.find_element_by_partial_link_text(SITE_TITLE)
+        self.assertEqual(self.server_url + reverse('homepage'),
+                         title_tag.get_attribute('href'))
+
+        # 3. and links/buttons on the navigation bar to:
+        #     a. Items link to master item list maintenance
+        item_link = header.find_element_by_partial_link_text('Items')
+        self.assertEqual(self.server_url + reverse('item_maintenance'),
+                         item_link.get_attribute('href'))
+
+        #     b. Reports button with sub-links to each report
+        report_button = header.find_element_by_partial_link_text('Reports')
+        self.assertEqual(self.browser.current_url + '#',
+                         report_button.get_attribute('href'))
+
+        return header
+
+    def site_footer_elements(self):
+        """
+        Check if current browser page content contains the site footer and all
+        common components. Returns the footer webelement to the caller after
+        initial tests.
+
+        """
+
+        # Footer shows the application name, version, copyright and license
+        # information with link to source code, author contact and license web
+        # sites.
+        footer = self.browser.find_element_by_tag_name('footer')
+
+        self.assertIn(SITE_TITLE, footer.text)
+        self.assertIn('v%d.%d %s' % VERSION, footer.text)
+        self.assertIn('Copyright 2014 Sudaraka Wijesinghe', footer.text)
+        self.assertIn('AGPL version 3 or later', footer.text)
+
+        link = footer.find_element_by_link_text('source code')
+        self.assertIn(link.get_attribute('href'),
+                      ('https://github.com/sudaraka/sopin-web',
+                       'https://bitbucket.com/sudaraka/sopin-web',
+                       'http://git.sudaraka.org/sopin/sopin-web'))
+
+        link = footer.find_element_by_link_text('Sudaraka Wijesinghe')
+        self.assertEqual(link.get_attribute('href'),
+                         'http://sudaraka.org/contact')
+
+        link = footer.find_element_by_link_text('AGPL')
+        self.assertEqual(link.get_attribute('href'),
+                         'https://www.gnu.org/licenses/agpl.html')
+
+        return footer

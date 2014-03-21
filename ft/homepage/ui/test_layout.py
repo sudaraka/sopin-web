@@ -39,8 +39,6 @@ class HomepageFirstVisit(FunctionalTestBase):
         """
 
         # Shopper visit the site's homepage for the first time.
-        self.browser.get(self.server_url)
-        self.browser.set_window_size(1024, 768)
         viewport = self.browser.get_window_size()
 
         # and notices following areas in the home page
