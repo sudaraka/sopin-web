@@ -1,36 +1,43 @@
+#  ui/tests/test_homepage.py: Unit tests for homepage UI
+#
+#  Copyright 2014 Sudaraka Wijesinghe <sudaraka.org/contact>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 """ UI Unit test for homepage """
 
-from django.test import TestCase
-
-from app.settings import SITE_TITLE, VERSION
+from ui.tests.base import BaseUnitTestCase
 
 
-class HomepageTest(TestCase):
+class HomepageTest(BaseUnitTestCase):
     """ Homepage unit test """
 
-    def test_homepage_url_render_home_template(self):
-        """ Url '/' should render the template 'home.html' """
+    uri = '/'
+    template = 'home.html'
 
-        response = self.client.get('/')
-        self.assertTemplateUsed(response, 'home.html')
+    def test_uri_render_correct_template(self):
+        """ Call base class function """
+
+        self.uri_render_correct_template()
 
     def test_site_title_is_being_passed_to_the_template(self):
-        """
-        Verify that site title is passed to the template via response context
-        """
+        """ Call base class function """
 
-        response = self.client.get('/')
-
-        self.assertIn('site_title', response.context)
-        self.assertEqual(response.context['site_title'], SITE_TITLE)
+        self.site_title_is_being_passed_to_the_template()
 
     def test_site_version_is_being_passed_to_the_template(self):
-        """
-        Verify that site version is passed to the template via response context
-        """
+        """ Call base class function """
 
-        response = self.client.get('/')
-
-        self.assertIn('site_version', response.context)
-        self.assertEqual(response.context['site_version'], ('v%d.%d %s' %
-                                                            VERSION).strip())
+        self.site_version_is_being_passed_to_the_template()
