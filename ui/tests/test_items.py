@@ -25,7 +25,7 @@ class ItemsPageTest(BaseUnitTestCase):
     """ Item maintenance page unit test """
 
     uri = '/item-maintenance/'
-    template = 'items.html'
+    template = 'items/list.html'
     page_title = 'Item Maintenance'
 
     def test_uri_render_correct_template(self):

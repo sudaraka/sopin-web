@@ -38,15 +38,17 @@ def item_maintenance_view(request):
 
     """
 
-    return render(request, 'items.html', {'site_title':
-                                          SITE_TITLE + ' - Item Maintenance',
-                                          'site_version': ('v%d.%d %s' %
-                                                           VERSION).strip()})
+    return render(request, 'items/list.html',
+                  {
+                      'site_title': SITE_TITLE + ' - Item Maintenance',
+                      'site_version': ('v%d.%d %s' % VERSION).strip()
+                  })
 
 
 def item_maintenance_form(request):
     """
-    ..........
+    Render item maintenance (add/edit) form, and handle the submitted data.
+
     """
 
-    return render(request, 'form.html')
+    return render(request, 'items/form.html')
