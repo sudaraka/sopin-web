@@ -25,4 +25,6 @@ urlpatterns = patterns(
     url(r'^$', 'views.homepage_view', name='homepage'),
     url(r'^item-maintenance/$', 'views.item_maintenance_view',
         name='item_maintenance'),
+    url(r'^item-maintenance/form$', 'views.item_maintenance_form',
+        name='item_maintenance_form'),
 )

@@ -7,7 +7,10 @@
         <div class="page-header">
             <h3 class="col-xs-10">Item Maintenance</h3>
 
-            <button type="button" id="btn_new_item" class="btn btn-success pull-right">
+            <button type="button" id="btn_new_item"
+                class="btn btn-success pull-right" data-toggle="modal"
+                data-target="#div_item_form" data-backdrop="static"
+                data-remote="{% url 'item_maintenance_form' %}">
                 <i class="fa fa-file"></i>
                 <span class="hidden-xs hidden-sm">Add New Item</span>
             </button>
@@ -19,6 +22,13 @@
             No items available
         </div>
 
+    </div>
+</div>
+
+<div id="div_item_form" class="modal fade" tabindex="-1" role="dialog"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content"></div>
     </div>
 </div>
 {% endblock %}

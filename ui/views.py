@@ -42,3 +42,11 @@ def item_maintenance_view(request):
                                           SITE_TITLE + ' - Item Maintenance',
                                           'site_version': ('v%d.%d %s' %
                                                            VERSION).strip()})
+
+
+def item_maintenance_form(request):
+    """
+    ..........
+    """
+
+    return render(request, 'form.html')
