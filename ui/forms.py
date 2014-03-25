@@ -19,22 +19,8 @@
 """ Forms handlers for the web site """
 
 from django import forms
-from django.db import models
 
-#from data.models.inventory import Item
-
-
-class Mock(models.Model):
-    """ mock """
-
-    name = models.CharField(max_length=32, unique=True, blank=False,
-                            null=False)
-    unit_symbol = models.CharField(max_length=8, blank=True)
-    unit_weight = models.DecimalField(max_digits=6, decimal_places=2,
-                                      default=1)
-    purchase_threshold = models.IntegerField(default=21)
-    extended_threshold = models.IntegerField(null=True, blank=True)
-    heavy = models.BooleanField()
+from data.models.inventory import Item
 
 
 class ItemForm(forms.models.ModelForm):
@@ -43,7 +29,7 @@ class ItemForm(forms.models.ModelForm):
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for add/edit form """
 
-        model = Mock
+        model = Item
         labels = {
             'unit_weight': 'Weight per Unit',
             'unit_symbol': 'Unit Symbol',
