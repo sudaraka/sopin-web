@@ -19,6 +19,7 @@
 """ UI Unit test for item add/edit """
 
 from ui.tests.base import BaseUnitTestCase
+from ui.forms import ItemForm
 
 
 class ItemAddFormTest(BaseUnitTestCase):
@@ -31,3 +32,14 @@ class ItemAddFormTest(BaseUnitTestCase):
         """ Call base class function """
 
         self.uri_render_correct_template()
+
+    def test_template_receive_the_form_via_context(self):
+        """
+        Item form template should have the ItemForm instance in it's context.
+
+        """
+
+        response = self.client.get(self.uri)
+
+        self.assertIn('form', response.context)
+        self.assertEqual(type(response.context['form']), type(ItemForm()))

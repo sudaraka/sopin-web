@@ -22,6 +22,8 @@ from django.shortcuts import render
 
 from app.settings import SITE_TITLE, VERSION
 
+from ui.forms import ItemForm
+
 
 def homepage_view(request):
     """ Process homepage url '/' and render the template 'home.html' """
@@ -51,4 +53,6 @@ def item_maintenance_form(request):
 
     """
 
-    return render(request, 'items/form.html')
+    form = ItemForm()
+
+    return render(request, 'items/form.html', {'form': form})
