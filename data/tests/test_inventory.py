@@ -20,6 +20,7 @@
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 from data.models.inventory import Item
 
@@ -56,5 +57,20 @@ class ItemModelTest(TestCase):
         item = Item(name='')
 
         with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
+
+    def test_duplicate_item_names_are_not_allowed(self):
+        """
+        Test application logic that prevents duplicate items names from being
+        saved to the database.
+
+        """
+
+        Item.objects.create(name='ITEM A')
+        Item.objects.create(name='ITEM B')
+        item = Item(name='ITEM A')
+
+        with self.assertRaises(IntegrityError):
             item.save()
             item.full_clean()
