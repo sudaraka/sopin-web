@@ -36,3 +36,11 @@ class ItemModelTest(TestCase):
         self.assertEqual(item.unit_weight, 1)
         self.assertEqual(item.purchase_threshold, 21)
         self.assertEqual(item.extended_threshold, None)
+
+    def test_saving_item_with_default_values(self):
+        """ Test saving item records with default values """
+
+        item = Item()
+        item.save()
+
+        self.assertIn(item, Item.objects.all())
