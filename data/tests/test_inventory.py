@@ -19,6 +19,7 @@
 """ UI Unit test for inventory data models """
 
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 
 from data.models.inventory import Item
 
@@ -44,3 +45,16 @@ class ItemModelTest(TestCase):
         item.save()
 
         self.assertIn(item, Item.objects.all())
+
+    def test_blank_item_names_are_not_allowed(self):
+        """
+        Test application logic that prevents blank items names from being saved
+        to the database.
+
+        """
+
+        item = Item(name='')
+
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
