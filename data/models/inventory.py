@@ -26,11 +26,11 @@ class Item(models.Model):
 
     name = models.CharField(max_length=32, unique=True, blank=False,
                             null=False)
-    unit_symbol = models.CharField(max_length=8)
+    unit_symbol = models.CharField(max_length=8, blank=True)
     unit_weight = models.DecimalField(max_digits=6, decimal_places=2,
                                       default=1)
     purchase_threshold = models.IntegerField(default=21)
-    extended_threshold = models.IntegerField(null=True)
+    extended_threshold = models.IntegerField(null=True, blank=True)
 
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Item model """
