@@ -27,7 +27,8 @@ from django.db import models
 class Mock(models.Model):
     """ mock """
 
-    name = models.CharField(max_length=32, blank=False, null=False)
+    name = models.CharField(max_length=32, unique=True, blank=False,
+                            null=False)
     unit_symbol = models.CharField(max_length=8, blank=True)
     unit_weight = models.DecimalField(max_digits=6, decimal_places=2,
                                       default=1)

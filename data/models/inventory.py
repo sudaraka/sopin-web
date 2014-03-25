@@ -31,6 +31,7 @@ class Item(models.Model):
                                       default=1)
     purchase_threshold = models.IntegerField(default=21)
     extended_threshold = models.IntegerField(null=True, blank=True)
+    heavy = models.BooleanField(default=False)
 
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Item model """
