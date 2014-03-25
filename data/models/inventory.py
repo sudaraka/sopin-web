@@ -35,6 +35,8 @@ class Item(models.Model):
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Item model """
 
+        ordering = ('name', )
+
         # Set following fields manually since our models are in sub-directories
         app_label = 'data'
         db_table = 'sopin_item'

@@ -74,3 +74,13 @@ class ItemModelTest(TestCase):
         with self.assertRaises(IntegrityError):
             item.save()
             item.full_clean()
+
+    def test_retrieved_items_are_sorted_by_name(self):
+        """ Item retrieved back should be sorted by the name """
+
+        i1 = Item.objects.create(name='A')
+        i2 = Item.objects.create(name='C')
+        i3 = Item.objects.create(name='X')
+        i4 = Item.objects.create(name='B')
+
+        self.assertEqual(list(Item.objects.all()), [i1, i4, i2, i3])
