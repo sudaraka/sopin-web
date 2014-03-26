@@ -6,8 +6,62 @@
 </div>
 
 <div class="modal-body">
-    {{ form }}
+    <form method="post" action="{% url 'item_maintenance_form' %}">
+        {% for field in form %}
+
+            {% if 'heavy' == field.html_name %}
+
+            <div class="form-group col-xs-12">
+                <div class="checkbox">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field }} {{ field.label }}</label>
+                </div>
+
+                {{ field.errors }}
+            </div>
+
+            {% elif 'unit_weight' == field.html_name %}
+
+            <div class="form-group col-xs-12 col-sm-6">
+                {{ field.label_tag }}
+                <div class="input-group">
+                    {{ field }}
+                    <span class="input-group-addon">grams</span>
+                </div>
+
+                {{ field.errors }}
+            </div>
+
+            {% elif 'extended_threshold' == field.html_name or 'purchase_threshold' == field.html_name %}
+
+            <div class="form-group col-xs-12 col-sm-6">
+                {{ field.label_tag }}
+                <div class="input-group">
+                    {{ field }}
+                    <span class="input-group-addon">days</span>
+                </div>
+
+                {{ field.errors }}
+            </div>
+
+            {% else %}
+
+            <div class="form-group col-xs-12
+                {% if 'name' != field.name %} col-sm-6{% endif %}">
+                {{ field.label_tag }}
+                {{ field }}
+
+                {{ field.errors }}
+            </div>
+
+            {% endif %}
+
+        {% endfor %}
+    </form>
+
 </div>
+
+<div class="clearfix"></div>
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">

@@ -40,8 +40,27 @@ class ItemForm(forms.models.ModelForm):
         widgets = {
             'name': forms.fields.TextInput(attrs={
                 'required': 'required',
+                'class': 'form-control',
+            }),
+            'unit_symbol': forms.fields.TextInput(attrs={
+                'class': 'form-control',
             }),
             'unit_weight': forms.fields.TextInput(attrs={
                 'maxlength': 7,
+                'type': 'number',
+                'class': 'form-control',
+            }),
+            'purchase_threshold': forms.fields.TextInput(attrs={
+                'type': 'number',
+                'class': 'form-control',
+            }),
+            'extended_threshold': forms.fields.TextInput(attrs={
+                'type': 'number',
+                'class': 'form-control',
+            }),
+            'heavy': forms.fields.TextInput(attrs={
+                'class': 'ull-left',
+                'type': 'checkbox',
+                'style': 'padding-top: 4px;',
             }),
         }

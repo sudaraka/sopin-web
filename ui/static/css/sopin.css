@@ -37,3 +37,15 @@ footer {
 .page-header h3 {
     margin-top: 5px;
 }
+
+input[type=number] {
+    text-align: right;
+}
+
+label {
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    margin: 0;
+}

@@ -71,7 +71,7 @@ class AddItemPageVisit(FunctionalTestBase):
         self.assertEqual('Weight per Unit:', label.text)
 
         element = self.browser.find_element_by_css_selector(
-            'input#id_unit_weight[type=text]')
+            'input#id_unit_weight[type=number]')
         self.assertEqual('7', element.get_attribute('maxlength'))
         self.assertEqual('1', element.get_attribute('value'))
 
@@ -108,7 +108,7 @@ class AddItemPageVisit(FunctionalTestBase):
         # 6. Check box for heavy item with label text "this is a heavy item"
         label = self.browser.find_element_by_css_selector(
             'label[for=id_heavy]')
-        self.assertEqual('This is a heavy item:', label.text)
+        self.assertEqual('This is a heavy item', label.text)
 
         element = self.browser.find_element_by_css_selector(
             'input#id_heavy[type=checkbox]')

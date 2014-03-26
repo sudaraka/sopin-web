@@ -2,13 +2,12 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
 
         <div class="page-header">
             <h3 class="col-xs-10">Item Maintenance</h3>
 
             <button type="button" id="btn_new_item"
-                class="btn btn-success pull-right" data-toggle="modal"
+                class="btn btn-success" data-toggle="modal"
                 data-target="#div_item_form" data-backdrop="static"
                 data-remote="{% url 'item_maintenance_form' %}">
                 <i class="fa fa-file"></i>
@@ -22,7 +21,6 @@
             No items available
         </div>
 
-    </div>
 </div>
 
 <div id="div_item_form" class="modal fade" tabindex="-1" role="dialog"
