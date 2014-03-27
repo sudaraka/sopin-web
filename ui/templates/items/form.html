@@ -5,8 +5,10 @@
     <h4 class="modal-title">New Item</a>
 </div>
 
-<div class="modal-body">
-    <form method="post" action="{% url 'item_maintenance_form' %}">
+<form id="item_form" method="post" action="{% url 'item_maintenance_form' %}">
+    {% csrf_token %}
+
+    <div class="modal-body">
         {% for field in form %}
 
             {% if 'heavy' == field.html_name %}
@@ -57,15 +59,54 @@
             {% endif %}
 
         {% endfor %}
-    </form>
 
-</div>
+    </div>
 
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
 
-<div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">
-        Close
-    </button>
-    <button type="button" class="btn btn-primary">Save Item</button>
-</div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+            Close
+        </button>
+        <input type="submit" class="btn btn-primary" value="Save Item" />
+    </div>
+
+</form>
+
+<script>
+$(function(){
+
+    $('#item_form').validate({
+        messages: {
+            name: 'Item name cannot be blank',
+            unit_weight: {
+                required: 'Unit weight cannot be blank.',
+                number: 'Unit weight must be a number'
+            },
+            purchase_threshold: {
+                required: 'Purchase threshold cannot be blank',
+                number: 'Purchase threshold must be a number',
+            }
+        },
+        errorClass: 'has-error',
+        validClass: 'has-success',
+        errorElement: 'span',
+        errorClass: 'text-danger',
+        errorPlacement: function(err, elm) {
+            err.appendTo(elm.closest('.form-group'));
+        },
+        highlight: function(elm) {
+            var group_div = $(elm).closest('.form-group');
+
+            group_div
+                .removeClass('has-success')
+                .addClass('has-error')
+                ;
+        },
+        submitHandler: function(form) {
+            var xhr = $.post($(form).prop('action'), $(form).serialize());
+        }
+    });
+
+});
+</script>

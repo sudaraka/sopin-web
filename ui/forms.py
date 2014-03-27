@@ -46,11 +46,13 @@ class ItemForm(forms.models.ModelForm):
                 'class': 'form-control',
             }),
             'unit_weight': forms.fields.TextInput(attrs={
+                'required': 'required',
                 'maxlength': 7,
                 'type': 'number',
                 'class': 'form-control',
             }),
             'purchase_threshold': forms.fields.TextInput(attrs={
+                'required': 'required',
                 'type': 'number',
                 'class': 'form-control',
             }),

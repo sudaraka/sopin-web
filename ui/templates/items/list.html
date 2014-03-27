@@ -1,25 +1,29 @@
 {% extends 'base.html' %}
 
+{% block javascripts %}
+<script src="/static/js/jquery.validate.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
 
-        <div class="page-header">
-            <h3 class="col-xs-10">Item Maintenance</h3>
+    <div class="page-header">
+        <h3 class="col-xs-10">Item Maintenance</h3>
 
-            <button type="button" id="btn_new_item"
-                class="btn btn-success" data-toggle="modal"
-                data-target="#div_item_form" data-backdrop="static"
-                data-remote="{% url 'item_maintenance_form' %}">
-                <i class="fa fa-file"></i>
-                <span class="hidden-xs hidden-sm">Add New Item</span>
-            </button>
+        <button type="button" id="btn_new_item"
+            class="btn btn-success" data-toggle="modal"
+            data-target="#div_item_form" data-backdrop="static"
+            data-remote="{% url 'item_maintenance_form' %}">
+            <i class="fa fa-file"></i>
+            <span class="hidden-xs hidden-sm">Add New Item</span>
+        </button>
 
-            <div class="clearfix"></div>
-        </div>
+        <div class="clearfix"></div>
+    </div>
 
-        <div class="items-table">
-            No items available
-        </div>
+    <div class="items-table">
+        No items available
+    </div>
 
 </div>
 
