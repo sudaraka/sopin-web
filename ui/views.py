@@ -19,10 +19,13 @@
 """ UI views """
 
 from django.shortcuts import render
+from django.http import HttpResponse
 
 from app.settings import SITE_TITLE, VERSION
 
 from ui.forms import ItemForm
+
+from data.models.inventory import Item
 
 
 def homepage_view(request):
@@ -40,8 +43,11 @@ def item_maintenance_view(request):
 
     """
 
+    item_list = Item.objects.all()
+
     return render(request, 'items/list.html',
                   {
+                      'item_list': item_list,
                       'site_title': SITE_TITLE + ' - Item Maintenance',
                       'site_version': ('v%d.%d %s' % VERSION).strip()
                   })

@@ -31,7 +31,13 @@ $('body').on('hidden.bs.modal', '.modal', function() {
     </div>
 
     <div class="items-table">
-        No items available
+        {% if item_list %}
+            {% for item in item_list %}
+            {{ item.name }}<br />
+            {% endfor %}
+        {% else %}
+            No items available
+        {% endif %}
     </div>
 
 </div>

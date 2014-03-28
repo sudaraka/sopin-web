@@ -18,7 +18,11 @@
 
 """ UI Unit test for item maintenance page """
 
+from django.db.models.query import QuerySet
+
 from ui.tests.base import BaseUnitTestCase
+
+from data.models.inventory import Item
 
 
 class ItemsPageTest(BaseUnitTestCase):
@@ -42,3 +46,42 @@ class ItemsPageTest(BaseUnitTestCase):
         """ Call base class function """
 
         self.site_version_is_being_passed_to_the_template()
+
+    def test_template_receives_the_item_list_via_context(self):
+        """
+        Item form template should have the list of Item records instance in
+        it's context.
+
+        """
+
+        response = self.client.get(self.uri)
+
+        self.assertIn('item_list', response.context)
+        self.assertEqual(type(response.context['item_list']), type(QuerySet()))
+
+    def test_template_receives_all_the_item_from_data_modal(self):
+        """
+        Template received all the items that are currently in the
+        Item.objects.all() query set.
+
+        """
+
+        test_list = [
+            Item.objects.create(name='Item A'),
+            Item.objects.create(name='Item B'),
+            Item.objects.create(name='Item C'),
+            Item.objects.create(name='Item D'),
+        ]
+
+        response = self.client.get(self.uri)
+
+        template_list = response.context['item_list']
+
+        # Check if both lists have the same record count
+        self.assertEqual(len(test_list), template_list.count())
+
+        # Verify each item and list order
+        for test_item in test_list:
+            template_item = template_list[test_list.index(test_item)]
+
+            self.assertEqual(test_item, template_item)
