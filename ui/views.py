@@ -18,6 +18,8 @@
 
 """ UI views """
 
+import json
+
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -59,6 +61,20 @@ def item_maintenance_form(request):
 
     """
 
-    form = ItemForm()
+    if 'POST' == request.method:
+        form = ItemForm(data=request.POST)
+
+        if form.is_valid():  # pragma: no branch
+            form.save()
+
+            result = {
+                'code': 0,
+                'message': 'success',
+            }
+
+            return HttpResponse(json.dumps(result),
+                                content_type='application/json')
+    else:
+        form = ItemForm()
 
     return render(request, 'items/form.html', {'form': form})

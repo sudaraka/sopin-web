@@ -119,11 +119,24 @@ $(function(){
                         .text(error)
                         .appendTo('.modal-body')
                         ;
-
-                    $('*', form).prop('disabled', false);
                 })
                 .done(function(result, status, xhr) {
-                    //location.reload();
+                    if(0 == result.code) {
+                        location.reload();
+                        return;
+                    }
+
+                    $('.modal-body .alert').remove();
+
+                    $('<div>')
+                        .addClass('alert alert-danger')
+                        .text(result.message)
+                        .appendTo('.modal-body')
+                        ;
+
+                })
+                .always(function() {
+                    $('*', form).prop('disabled', false);
                 })
                 ;
         }
