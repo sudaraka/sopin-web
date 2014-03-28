@@ -144,3 +144,38 @@ class ItemAddFormVisit(FunctionalTestBase):
         self.assertFalse(modal.find_element_by_id('id_name').is_enabled())
         self.assertFalse(modal.find_element_by_css_selector
                          ('.modal-footer button.btn-primary').is_enabled())
+
+    def test_saved_form_items_show_up_in_the_items_table(self):
+        """
+        After adding a new item, it shows up in the table on the list table.
+
+        """
+
+        # Shopper opens the add item form,
+        modal = self.open_new_item_form()
+
+        # enter a unit name,
+        modal.find_element_by_id('id_name').send_keys('test item #1')
+
+        # then she and click the submit button.
+        modal.find_element_by_css_selector(
+            '.modal-footer button.btn-primary').click()
+
+        # Item now shows up in the item maintenance page
+        self.assertIn('test item #1',
+                      self.browser.find_element_by_css_selector
+                      ('div.items-table').text)
+
+        # She add another item just to be sure
+        modal = self.open_new_item_form()
+        modal.find_element_by_id('id_name').send_keys('test item #2')
+        modal.find_element_by_css_selector(
+            '.modal-footer button.btn-primary').click()
+
+        # Both Items are now show up in the item maintenance page
+        self.assertIn('test item #1',
+                      self.browser.find_element_by_css_selector
+                      ('div.items-table').text)
+        self.assertIn('test item #2',
+                      self.browser.find_element_by_css_selector
+                      ('div.items-table').text)
