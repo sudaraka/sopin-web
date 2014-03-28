@@ -78,7 +78,7 @@ class ItemAddFormVisit(FunctionalTestBase):
 
         # then she and click the submit button.
         modal.find_element_by_css_selector(
-            '.modal-footer input.btn-primary').click()
+            '.modal-footer button.btn-primary').click()
 
         # Error message is displayed saying that name is required
         self.assertIn(error_messages[0], modal.text)
@@ -90,7 +90,7 @@ class ItemAddFormVisit(FunctionalTestBase):
         # She then clears the weight filed and hits the submit button.
         modal.find_element_by_id('id_unit_weight').clear()
         modal.find_element_by_css_selector(
-            '.modal-footer input.btn-primary').click()
+            '.modal-footer button.btn-primary').click()
 
         # Error new message is displayed saying that weight is required
         self.assertIn(error_messages[1], modal.text)
@@ -110,7 +110,7 @@ class ItemAddFormVisit(FunctionalTestBase):
         # again
         modal.find_element_by_id('id_purchase_threshold').clear()
         modal.find_element_by_css_selector(
-            '.modal-footer input.btn-primary').click()
+            '.modal-footer button.btn-primary').click()
 
         # It now shows the error message saying purchase threshold is a
         # required field.
