@@ -127,24 +127,6 @@ class ItemAddFormVisit(FunctionalTestBase):
         self.assertNotIn(error_messages[3], modal.text)
         self.assertNotIn(error_messages[4], modal.text)
 
-    def test_disable_the_form_while_being_submitted(self):
-        """ Test submitting valid form saves the item """
-
-        # Shopper opens the add item form,
-        modal = self.open_new_item_form()
-
-        # enter a unit name,
-        modal.find_element_by_id('id_name').send_keys('test item #1')
-
-        # then she and click the submit button.
-        modal.find_element_by_css_selector(
-            '.modal-footer button.btn-primary').click()
-
-        # Form is no longer editable
-        self.assertFalse(modal.find_element_by_id('id_name').is_enabled())
-        self.assertFalse(modal.find_element_by_css_selector
-                         ('.modal-footer button.btn-primary').is_enabled())
-
     def test_saved_form_items_show_up_in_the_items_table(self):
         """
         After adding a new item, it shows up in the table on the list table.
