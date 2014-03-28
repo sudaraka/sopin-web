@@ -39,6 +39,21 @@ class ItemAddFormVisit(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
+    def open_new_item_form(self):
+        """
+        Open the item add/edit form by clicking the "add new" button, and
+        return the modal dialog element that opens.
+
+        """
+
+        # Shopper opens the add item form
+        self.browser.find_element_by_id('btn_new_item').click()
+
+        ## wait for the animation
+        sleep(.1)
+
+        return self.browser.find_element_by_id('div_item_form')
+
     def test_submitting_form_blank_fields_show_the_error_messages(self):
         """
         Verify that hitting the submit button with name, weight or threshold
@@ -55,13 +70,9 @@ class ItemAddFormVisit(FunctionalTestBase):
         ]
 
         # Shopper opens the add item form
-        self.browser.find_element_by_id('btn_new_item').click()
-
-        ## wait for the animation
-        sleep(.1)
+        modal = self.open_new_item_form()
 
         # Form shows no error messages
-        modal = self.browser.find_element_by_id('div_item_form')
         for msg in error_messages:
             self.assertNotIn(msg, modal.text)
 
@@ -120,12 +131,7 @@ class ItemAddFormVisit(FunctionalTestBase):
         """ Test submitting valid form saves the item """
 
         # Shopper opens the add item form,
-        self.browser.find_element_by_id('btn_new_item').click()
-
-        ## wait for the animation
-        sleep(.1)
-
-        modal = self.browser.find_element_by_id('div_item_form')
+        modal = self.open_new_item_form()
 
         # enter a unit name,
         modal.find_element_by_id('id_name').send_keys('test item #1')
