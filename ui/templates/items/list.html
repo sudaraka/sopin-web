@@ -2,6 +2,15 @@
 
 {% block javascripts %}
 <script src="/static/js/jquery.validate.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+
+$('body').on('hidden.bs.modal', '.modal', function() {
+  $(this).removeData('bs.modal');
+});
+
+//]>
+</script>
 {% endblock %}
 
 {% block content %}
