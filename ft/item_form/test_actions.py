@@ -115,3 +115,26 @@ class ItemAddFormVisit(FunctionalTestBase):
         modal.find_element_by_id('id_purchase_threshold').send_keys('1')
         self.assertNotIn(error_messages[3], modal.text)
         self.assertNotIn(error_messages[4], modal.text)
+
+    def test_disable_the_form_while_being_submitted(self):
+        """ Test submitting valid form saves the item """
+
+        # Shopper opens the add item form,
+        self.browser.find_element_by_id('btn_new_item').click()
+
+        ## wait for the animation
+        sleep(.1)
+
+        modal = self.browser.find_element_by_id('div_item_form')
+
+        # enter a unit name,
+        modal.find_element_by_id('id_name').send_keys('test item #1')
+
+        # then she and click the submit button.
+        modal.find_element_by_css_selector(
+            '.modal-footer button.btn-primary').click()
+
+        # Form is no longer editable
+        self.assertFalse(modal.find_element_by_id('id_name').is_enabled())
+        self.assertFalse(modal.find_element_by_css_selector
+                         ('.modal-footer button.btn-primary').is_enabled())

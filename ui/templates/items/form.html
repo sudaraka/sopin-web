@@ -104,7 +104,26 @@ $(function(){
                 ;
         },
         submitHandler: function(form) {
-            var xhr = $.post($(form).prop('action'), $(form).serialize());
+            var form_data = $(form).serialize();
+
+            $('*', form).prop('disabled', true);
+
+            $.post($(form).prop('action'), form_data)
+                .fail(function(result, status, error) {
+                    $('.modal-body .alert').remove();
+
+                    $('<div>')
+                        .addClass('alert alert-danger')
+                        .text(error)
+                        .appendTo('.modal-body')
+                        ;
+
+                    $('*', form).prop('disabled', false);
+                })
+                .done(function(result, status, xhr) {
+                    //location.reload();
+                })
+                ;
         }
     });
 
