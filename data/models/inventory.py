@@ -30,7 +30,7 @@ class Item(models.Model):
     unit_weight = models.DecimalField(max_digits=6, decimal_places=2,
                                       default=1)
     purchase_threshold = models.IntegerField(default=21)
-    extended_threshold = models.IntegerField(null=True, blank=True)
+    extended_threshold = models.IntegerField(null=False, blank=True, default=0)
     heavy = models.BooleanField(default=False)
 
     class Meta:  # pylint: disable=I0011,C1001
