@@ -31,7 +31,8 @@ footer {
 }
 
 .navbar-brand {
-    color: #fff !important;
+    font-size: 200%;
+    padding-top: 10px;
 }
 
 .page-header h3 {

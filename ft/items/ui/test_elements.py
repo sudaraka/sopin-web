@@ -22,9 +22,13 @@ different states.
 
 """
 
+from operator import itemgetter
+
 from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
+
+from data.models.inventory import Item
 
 
 class ItemsPageVisit(FunctionalTestBase):
@@ -63,3 +67,72 @@ class ItemsPageVisit(FunctionalTestBase):
         # 5. Text "no items available"
         table_div = self.browser.find_element_by_class_name('items-table')
         self.assertIn('No items available', table_div.text)
+
+
+class ItemsPageVisitWithData(FunctionalTestBase):
+    """
+    Test for item maintenance page elements when user visit the page via the
+    link in site main navigation, with few items records already in context.
+
+    """
+
+    test_uri = reverse('item_maintenance')
+
+    test_data = [
+        {'name': 'TEST #1', },
+        {'name': 'TEST #2', 'unit_symbol': 'Bottel', 'heavy': True, },
+        {'name': 'TEST #4', 'unit_symbol': 'Pkt', 'unit_weight': 200,
+         'purchase_threshold': 10, },
+        {'name': 'TEST #3', 'unit_weight': 400, 'purchase_threshold': 15,
+         'extended_threshold': 4, 'heavy': True, },
+    ]
+
+    def setUp(self):  # pylint: disable=I0011,E1002
+        """ Override parent method to populate context with Item data """
+
+        for item in self.test_data:
+            Item.objects.create(**item)
+
+        super(ItemsPageVisitWithData, self).setUp()
+
+    def test_elements_with_item_records(self):
+        """ Verify that all page elements are present with item records """
+
+        # Shopper visit the page with some item data already in the context.
+        # and see the following elements on the page:
+        #
+        # 1. There is a table with records
+        table = self.browser.find_element_by_css_selector('.items-table table')
+
+        # 2. Table shows Name, Unit Symbol, Weight, Thresholds and edit,
+        #    removed buttons
+        head = table.find_element_by_tag_name('thead')
+        self.assertIn('Name', head.text)
+        self.assertIn('Unit Symbol', head.text)
+        self.assertIn('Unit Weight', head.text)
+        self.assertIn('Purchase Threshold', head.text)
+
+        check_list = sorted(self.test_data, key=itemgetter('name'))
+        for item in check_list:
+            for k in item:
+                if 'extended_threshold' == k:
+                    continue
+
+                if 'heavy' == k and item[k]:
+                    cell = table.find_element_by_css_selector(
+                        'tbody tr:nth-child(%d) td.unit_weight' %
+                        (check_list.index(item) + 1))
+
+                    self.assertIn('fa-anchor',
+                                  cell.find_element_by_tag_name('small')
+                                  .get_attribute('class'))
+                else:
+                    if 'purchase_threshold' == k and \
+                            'extended_threshold' in item:
+                        item[k] += item['extended_threshold']
+
+                    cell = table.find_element_by_css_selector(
+                        'tbody tr:nth-child(%d) td.%s' %
+                        (check_list.index(item) + 1, k))
+
+                    self.assertIn(str(item[k]), cell.text)

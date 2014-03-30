@@ -32,9 +32,34 @@ $('body').on('hidden.bs.modal', '.modal', function() {
 
     <div class="items-table">
         {% if item_list %}
-            {% for item in item_list %}
-            {{ item.name }}<br />
-            {% endfor %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="name">Name</th>
+                        <th class="unit_symbol text-right">Unit Symbol</th>
+                        <th class="unit_weight text-right">Unit Weight</th>
+                        <th class="purchase_threshold text-right">Purchase Threshold</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in item_list %}
+                    <tr>
+                        <td class="name">{{ item.name }}</td>
+                        <td class="unit_symbol text-right">{{ item.unit_symbol }}</td>
+                        <td class="unit_weight text-right">
+                            {% if item.heavy %}<sup><small class="fa fa-anchor text-info"></small></sup>{% endif %}
+                            {{ item.unit_weight }}g
+                        </td>
+                        <td class="purchase_threshold text-right">{{ item.purchase_threshold|add:item.extended_threshold }} days</td>
+                        <td>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm"><strong>&times;</strong></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
             No items available
         {% endif %}
