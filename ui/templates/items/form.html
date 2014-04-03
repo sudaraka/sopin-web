@@ -2,10 +2,14 @@
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
         &times;
     </button>
-    <h4 class="modal-title">New Item</a>
+    <h4 class="modal-title">{%if 0 < form.instance.id %}Edit{% else %}New{% endif %} Item</a>
 </div>
 
-<form id="item_form" method="post" action="{% url 'item_maintenance_form' %}">
+{% url 'item_maintenance_form' form.instance.id as post_url %}
+{% if not post_url %}
+    {% url 'item_maintenance_form' as post_url %}
+{% endif %}
+<form id="item_form" method="post" action="{{ post_url }}">
     {% csrf_token %}
 
     <div class="modal-body">
@@ -16,7 +20,10 @@
             <div class="form-group col-xs-12">
                 <div class="checkbox">
                     <label for="{{ field.id_for_label }}">
-                        {{ field }} {{ field.label }}</label>
+                        <input type="checkbox" name="{{ field.html_name }}"
+                        value="{{ field.value }}" id="{{ field.id_for_label }}"
+                        {% if field.value %} checked="checked"{% endif %}/>
+                        {{ field.label }}</label>
                 </div>
 
                 {{ field.errors }}

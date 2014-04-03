@@ -112,16 +112,19 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         self.assertIn('Unit Weight', head.text)
         self.assertIn('Purchase Threshold', head.text)
 
+        stored_items = Item.objects.all().values()
+
         check_list = sorted(self.test_data, key=itemgetter('name'))
         for item in check_list:
+            row_index = check_list.index(item) + 1
+
             for k in item:
                 if 'extended_threshold' == k:
                     continue
 
                 if 'heavy' == k and item[k]:
                     cell = table.find_element_by_css_selector(
-                        'tbody tr:nth-child(%d) td.unit_weight' %
-                        (check_list.index(item) + 1))
+                        'tbody tr:nth-child(%d) td.unit_weight' % row_index)
 
                     self.assertIn('fa-anchor',
                                   cell.find_element_by_tag_name('small')
@@ -132,7 +135,14 @@ class ItemsPageVisitWithData(FunctionalTestBase):
                         item[k] += item['extended_threshold']
 
                     cell = table.find_element_by_css_selector(
-                        'tbody tr:nth-child(%d) td.%s' %
-                        (check_list.index(item) + 1, k))
+                        'tbody tr:nth-child(%d) td.%s' % (row_index, k))
 
                     self.assertIn(str(item[k]), cell.text)
+
+            btn_edit = table.find_element_by_css_selector(
+                'tbody tr:nth-child(%d) .btn-edit' % row_index)
+
+            self.assertEqual(reverse('item_maintenance_form',
+                                     args=(stored_items[row_index - 1]['id'],
+                                           )),
+                             btn_edit.get_attribute('data-remote'))

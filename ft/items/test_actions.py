@@ -29,6 +29,8 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
+from data.models.inventory import Item
+
 
 class ItemsPageVisit(FunctionalTestBase):
     """
@@ -55,3 +57,47 @@ class ItemsPageVisit(FunctionalTestBase):
         modal = self.browser.find_element_by_id('div_item_form')
         self.assertTrue(modal.is_displayed())
         self.assertIn('New Item', modal.text)
+
+
+class ItemsPageVisitWithData(FunctionalTestBase):
+    """
+    Test for item maintenance page actions when user visit the page with few
+    item records already in context.
+
+    """
+
+    test_uri = reverse('item_maintenance')
+
+    test_data = []
+
+    def setUp(self):  # pylint: disable=I0011,E1002
+        """ Override parent method to populate context with Item data """
+
+        self.test_data = [
+            Item.objects.create(name='test item #1', extended_threshold=4),
+            Item.objects.create(name='test item #3', unit_symbol='Bottle'),
+            Item.objects.create(name='test item #2', unit_weight=5000,
+                                heavy=True),
+        ]
+
+        super(ItemsPageVisitWithData, self).setUp()
+
+    def test_edit_button_displays_form_popup_with_record_information(self):
+        """
+        Verify that "Edit" button opens the pop-up for item form with record
+        data already populated.
+
+        """
+
+        # Shopper visit the item maintenance page and see number of items on
+        # the listing page. She clicks on the "Edit" button on the first item.
+        self.browser.find_element_by_css_selector(
+            '.items-table table tr:nth-child(1) button.btn-edit').click()
+
+        # wait for the animation
+        sleep(.1)
+
+        modal = self.browser.find_element_by_id('div_item_form')
+
+        self.assertTrue(modal.is_displayed())
+        self.assertIn('Edit Item', modal.text)

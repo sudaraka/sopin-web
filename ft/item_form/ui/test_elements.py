@@ -28,6 +28,8 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
+from data.models.inventory import Item
+
 
 class AddItemPageVisit(FunctionalTestBase):
     """
@@ -112,3 +114,151 @@ class AddItemPageVisit(FunctionalTestBase):
 
         element = self.browser.find_element_by_css_selector(
             'input#id_heavy[type=checkbox]')
+
+
+class EditItemPageVisit(FunctionalTestBase):
+    """
+    Test for item form page elements when user open the form pop-up via the
+    "edit" button on item maintenance page.
+
+    """
+
+    test_uri = reverse('item_maintenance')
+
+    test_data = [
+        {'name': 'TEST #1', },
+        {'name': 'TEST #3', },
+        {'name': 'TEST #2', 'unit_symbol': 'Bottle', 'unit_weight': 23,
+         'purchase_threshold': 40, 'extended_threshold': 3, 'heavy': True, },
+    ]
+
+    def setUp(self):  # pylint: disable=I0011,E1002
+        """ Override parent method to populate context with Item data """
+
+        for item in self.test_data:
+            Item.objects.create(**item)
+
+        super(EditItemPageVisit, self).setUp()
+
+    def test_elements_with_no_user_generated_content(self):
+        """
+        Verify all the required elements are available in form HTML.
+
+        """
+
+        # Shopper visit the item maintenance page, and click on the "edit"
+        # button in first row of the table.
+        self.open_edit_item_form(1)
+
+        # and see form in a pop-up with the following elements:
+        #
+        # 1. "Name" Input element with value "TEST #2""
+        element = self.browser. \
+            find_element_by_css_selector('input#id_name[type=text]')
+        self.assertEqual('TEST #1', element.get_attribute('value'))
+
+        # 2. "Weight per Unit" element with the value 23
+        element = self.browser.find_element_by_css_selector(
+            'input#id_unit_weight[type=number]')
+        self.assertEqual('1', element.get_attribute('value'))
+
+        # 3. "Unit Symbol" element with value "Bottle"
+        element = self.browser.find_element_by_css_selector(
+            'input#id_unit_symbol[type=text]')
+        self.assertEqual('', element.get_attribute('value'))
+
+        # 4. "Purchase Threshold" element with the value 40
+        element = self.browser.find_element_by_css_selector(
+            'input#id_purchase_threshold[type=number]')
+        self.assertEqual('21', element.get_attribute('value'))
+
+        # 5. "Threshold Extend" element with value 3
+        element = self.browser.find_element_by_css_selector(
+            'input#id_extended_threshold[type=number]')
+        self.assertEqual('0', element.get_attribute('value'))
+
+        # 6. Check box "this is a heavy item" checked
+        element = self.browser.find_element_by_css_selector(
+            'input#id_heavy[type=checkbox]')
+        self.assertFalse(element.is_selected())
+
+        # She closes the pop-up form and click on the "edit" button in second
+        # row of the table.
+        self.browser.find_element_by_css_selector(
+            '.modal-footer button[type=button].btn-default').click()
+
+        # wait for the animation
+        sleep(.3)
+
+        self.open_edit_item_form(2)
+
+        # and see form in a pop-up with the following elements:
+        #
+        # 1. "Name" Input element with value "TEST #2""
+        element = self.browser. \
+            find_element_by_css_selector('input#id_name[type=text]')
+        self.assertEqual('TEST #2', element.get_attribute('value'))
+
+        # 2. "Weight per Unit" element with the value 23
+        element = self.browser.find_element_by_css_selector(
+            'input#id_unit_weight[type=number]')
+        self.assertEqual('23', element.get_attribute('value'))
+
+        # 3. "Unit Symbol" element with value "Bottle"
+        element = self.browser.find_element_by_css_selector(
+            'input#id_unit_symbol[type=text]')
+        self.assertEqual('Bottle', element.get_attribute('value'))
+
+        # 4. "Purchase Threshold" element with the value 40
+        element = self.browser.find_element_by_css_selector(
+            'input#id_purchase_threshold[type=number]')
+        self.assertEqual('40', element.get_attribute('value'))
+
+        # 5. "Threshold Extend" element with value 3
+        element = self.browser.find_element_by_css_selector(
+            'input#id_extended_threshold[type=number]')
+        self.assertEqual('3', element.get_attribute('value'))
+
+        # 6. Check box "this is a heavy item" checked
+        element = self.browser.find_element_by_css_selector(
+            'input#id_heavy[type=checkbox]')
+        self.assertTrue(element.is_selected())
+        # Shopper visit the item maintenance page, and click on the "edit"
+        # button in second row of the table.
+        self.browser.find_element_by_css_selector(
+            '.items-table tr:nth-child(2) .btn-edit').click()
+
+        # wait for the animation
+        sleep(.1)
+
+        # and see form in a pop-up with the following elements:
+        #
+        # 1. "Name" Input element with value "TEST #2""
+        element = self.browser. \
+            find_element_by_css_selector('input#id_name[type=text]')
+        self.assertEqual('TEST #2', element.get_attribute('value'))
+
+        # 2. "Weight per Unit" element with the value 23
+        element = self.browser.find_element_by_css_selector(
+            'input#id_unit_weight[type=number]')
+        self.assertEqual('23', element.get_attribute('value'))
+
+        # 3. "Unit Symbol" element with value "Bottle"
+        element = self.browser.find_element_by_css_selector(
+            'input#id_unit_symbol[type=text]')
+        self.assertEqual('Bottle', element.get_attribute('value'))
+
+        # 4. "Purchase Threshold" element with the value 40
+        element = self.browser.find_element_by_css_selector(
+            'input#id_purchase_threshold[type=number]')
+        self.assertEqual('40', element.get_attribute('value'))
+
+        # 5. "Threshold Extend" element with value 3
+        element = self.browser.find_element_by_css_selector(
+            'input#id_extended_threshold[type=number]')
+        self.assertEqual('3', element.get_attribute('value'))
+
+        # 6. Check box "this is a heavy item" checked
+        element = self.browser.find_element_by_css_selector(
+            'input#id_heavy[type=checkbox]')
+        self.assertTrue(element.is_selected())

@@ -149,13 +149,30 @@ class FunctionalTestBase(LiveServerTestCase):
 
     def open_new_item_form(self):
         """
-        Open the item add/edit form by clicking the "add new" button, and
+        Open the item add form by clicking the "add new" button, and
         return the modal dialog element that opens.
 
         """
 
         # Shopper opens the add item form
         self.browser.find_element_by_id('btn_new_item').click()
+
+        # # wait for the animation
+        sleep(.1)
+
+        return self.browser.find_element_by_id('div_item_form')
+
+    def open_edit_item_form(self, from_item_list_row):
+        """
+        Open the item edit form by clicking the "edit" button, and return the
+        modal dialog element that opens.
+
+        """
+
+        # Shopper opens the edit item form
+        self.browser.find_element_by_css_selector(
+            '.items-table tr:nth-child(%d) .btn-edit' %
+            from_item_list_row).click()
 
         # # wait for the animation
         sleep(.1)

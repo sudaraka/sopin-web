@@ -55,14 +55,22 @@ def item_maintenance_view(request):
                   })
 
 
-def item_maintenance_form(request):
+def item_maintenance_form(request, itemid=''):
     """
     Render item maintenance (add/edit) form, and handle the submitted data.
 
     """
 
+    item = None
+
+    try:
+        if itemid is not None:
+            item = Item.objects.get(id=int(itemid))
+    except Item.DoesNotExist:
+        pass
+
     if 'POST' == request.method:
-        form = ItemForm(data=request.POST)
+        form = ItemForm(data=request.POST, instance=item)
 
         if form.is_valid():  # pragma: no branch
             form.save()
@@ -75,6 +83,6 @@ def item_maintenance_form(request):
             return HttpResponse(json.dumps(result),
                                 content_type='application/json')
     else:
-        form = ItemForm()
+        form = ItemForm(instance=item)
 
     return render(request, 'items/form.html', {'form': form})

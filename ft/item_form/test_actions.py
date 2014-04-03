@@ -27,11 +27,13 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
+from data.models.inventory import Item
+
 
 class ItemAddFormVisit(FunctionalTestBase):
     """
-    Test for item maintenance page actions when user visit the site for the
-    first time, with no user generated data.
+    Test for item add form actions when user opens the pop-up via "Add New
+    Item" button on item maintenance page.
 
     """
 
@@ -144,3 +146,68 @@ class ItemAddFormVisit(FunctionalTestBase):
         self.assertIn('test item #2',
                       self.browser.find_element_by_css_selector
                       ('div.items-table').text)
+
+
+class ItemEditFormVisit(FunctionalTestBase):
+    """
+    Test for item edit form actions when user opens the pop-up via "edit"
+    button on item maintenance page list.
+
+    """
+
+    test_uri = reverse('item_maintenance')
+
+    test_data = [
+        {'name': 'test item #1', },
+        {'name': 'test item #2', },
+    ]
+
+    def setUp(self):  # pylint: disable=I0011,E1002
+        """ Override parent method to populate context with Item data """
+
+        for item in self.test_data:
+            Item.objects.create(**item)
+
+        super(ItemEditFormVisit, self).setUp()
+
+    def test_edited_form_items_show_up_in_the_items_table(self):
+        """
+        After editing an existing item, the changes are applied to the table on
+        the list table.
+
+        """
+
+        # Shopper opens the edit item form,
+        modal = self.open_edit_item_form(1)
+
+        # enter a unit name,
+        modal.find_element_by_id('id_name').clear()
+        modal.find_element_by_id('id_name').send_keys('test item A')
+
+        # then she and click the submit button.
+        modal.find_element_by_css_selector(
+            '.modal-footer button.btn-primary').click()
+
+        # Item now shows up in the item maintenance page with the new name
+        table = self.browser.find_element_by_css_selector(
+            'div.items-table table')
+        self.assertIn('test item A', table.text)
+        self.assertNotIn('test item #1', table.text)
+        self.assertIn('test item #2', table.text)
+
+        # She edit another item just to be sure
+        # Note: "test item #2" is now on the first row because of model level
+        # sorting.
+        modal = self.open_edit_item_form(1)
+        modal.find_element_by_id('id_name').clear()
+        modal.find_element_by_id('id_name').send_keys('test item B')
+        modal.find_element_by_css_selector(
+            '.modal-footer button.btn-primary').click()
+
+        # Both Items are now show up in the item maintenance page
+        table = self.browser.find_element_by_css_selector(
+            'div.items-table table')
+        self.assertIn('test item A', table.text)
+        self.assertNotIn('test item #1', table.text)
+        self.assertIn('test item B', table.text)
+        self.assertNotIn('test item #2', table.text)

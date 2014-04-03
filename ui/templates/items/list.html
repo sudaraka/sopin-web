@@ -53,7 +53,12 @@ $('body').on('hidden.bs.modal', '.modal', function() {
                         </td>
                         <td class="purchase_threshold text-right">{{ item.purchase_threshold|add:item.extended_threshold }} days</td>
                         <td>
-                            <button class="btn btn-default btn-sm"><i class="fa fa-edit"></i></button>
+                            <button type="button"
+                                class="btn btn-default btn-sm btn-edit"
+                                data-toggle="modal" data-backdrop="static"
+                                data-target="#div_item_form"
+                                data-remote="{% url 'item_maintenance_form' item.id %}">
+                                <i class="fa fa-edit"></i></button>
                             <button class="btn btn-danger btn-sm"><strong>&times;</strong></button>
                         </td>
                     </tr>
