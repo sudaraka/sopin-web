@@ -101,3 +101,65 @@ class ItemsPageVisitWithData(FunctionalTestBase):
 
         self.assertTrue(modal.is_displayed())
         self.assertIn('Edit Item', modal.text)
+
+    def test_delete_button_displays_confirmation_popup_with_message(self):
+        """
+        Verify that "Delete" button opens the pop-up for confirmation with
+        record name.
+
+        """
+
+        # Shopper visit the item maintenance page and see number of items on
+        # the listing page. She clicks on the "Delete" button on the second
+        # item.
+        modal = self.open_delete_confirmation_dialog(2)
+
+        self.assertTrue(modal.is_displayed())
+        self.assertIn('Remove item ' + self.test_data[2].name + '?',
+                      modal.text)
+
+    def test_no_button_on_confirmation_popup_closes_it_without_change(self):
+        """
+        Verify that clicking no button on delete confirmation dialog returns
+        the user to item list without any change.
+
+        """
+
+        # Shopper visit the item maintenance page and clicks on the "Delete"
+        # button on an item.
+        modal = self.open_delete_confirmation_dialog(1)
+
+        modal.find_element_by_css_selector(
+            '.modal-footer button[data-dismiss=modal]').click()
+
+        table = self.browser.find_element_by_css_selector(
+            '.items-table table tbody')
+
+        for i in self.test_data:
+            self.assertIn(i.name, table.text)
+
+    def test_yes_button_on_confirmation_popup_removes_the_item_from_list(self):
+        """
+        Verify that clicking yes button on delete confirmation dialog returns
+        the user to item list with the selected item removed.
+
+        """
+
+        # Shopper visit the item maintenance page and clicks on the "Delete"
+        # button on an item.
+        modal = self.open_delete_confirmation_dialog(1)
+
+        modal.find_element_by_id('lnk_delete_confirm').click()
+
+        table = self.browser.find_element_by_css_selector(
+            '.items-table table tbody')
+
+        for i in self.test_data:
+            if self.test_data.index(i) == 0:
+                self.assertNotIn(i.name, table.text)
+            else:
+                self.assertIn(i.name, table.text)
+
+        self.assertIn('Item was successfully removed',
+                      self.browser.find_element_by_css_selector(
+                          'p.row.alert').text)

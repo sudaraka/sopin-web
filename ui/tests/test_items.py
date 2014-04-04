@@ -85,3 +85,59 @@ class ItemsPageTest(BaseUnitTestCase):
             template_item = template_list[test_list.index(test_item)]
 
             self.assertEqual(test_item, template_item)
+
+
+class ItemRemoveTest(BaseUnitTestCase):
+    """ Item remove function related unit test """
+
+    uri = '/item-maintenance/remove'
+
+    def test_non_existing_item_remove(self):
+        """
+        Calling item remove URL with non-existing item ID should put a warning
+        message in the application message queue.
+
+        """
+
+        Item.objects.create(name='Item A')
+        Item.objects.create(name='Item B')
+        Item.objects.create(name='Item C')
+
+        self.uri += '/999/'
+
+        response = self.client.get(self.uri)
+
+        # Model should contain 2 items
+        self.assertEqual(Item.objects.count(), 3)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/item-maintenance/')
+
+    def test_existing_item_remove(self):
+        """
+        Calling item remove URL  with existing item ID should remove it item
+        from database.
+
+        """
+
+        test_list = [
+            Item.objects.create(name='Item A'),
+            Item.objects.create(name='Item B'),
+            Item.objects.create(name='Item C'),
+        ]
+
+        self.uri += '/2/'
+
+        response = self.client.get(self.uri)
+
+        # Model should contain 2 items
+        self.assertEqual(Item.objects.count(), 2)
+
+        for i in test_list:
+            if 2 == i.id:
+                self.assertNotIn(i, Item.objects.all())
+            else:
+                self.assertIn(i, Item.objects.all())
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/item-maintenance/')

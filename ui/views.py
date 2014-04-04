@@ -20,8 +20,9 @@
 
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib import messages
 
 from app.settings import SITE_TITLE, VERSION
 
@@ -86,3 +87,25 @@ def item_maintenance_form(request, itemid=''):
         form = ItemForm(instance=item)
 
     return render(request, 'items/form.html', {'form': form})
+
+
+def item_maintenance_delete(request, itemid=''):
+    """
+    Remove selected item from the database and redirect to item maintenance
+    page.
+
+    """
+
+    try:
+        if itemid is not None:
+            Item.objects.get(id=int(itemid)).delete()
+
+            messages.success(request, 'Item was successfully removed')
+        else:  # pragma: no cover
+            messages.warning(request, 'Item ID to remove was not provided')
+    except Item.DoesNotExist:
+        messages.warning(request, 'Item with give ID does not exists')
+    except Exception as e:  # pragma: no cover
+        messages.error(request, e)
+
+    return redirect('item_maintenance')

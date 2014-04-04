@@ -178,3 +178,20 @@ class FunctionalTestBase(LiveServerTestCase):
         sleep(.1)
 
         return self.browser.find_element_by_id('div_item_form')
+
+    def open_delete_confirmation_dialog(self, from_item_list_row):
+        """
+        Open the item delete confirmation dialog by clicking the "delete"
+        button, and return the modal dialog element that opens.
+
+        """
+
+        # Shopper opens the delete item form
+        self.browser.find_element_by_css_selector(
+            '.items-table tr:nth-child(%d) .btn-delete' %
+            from_item_list_row).click()
+
+        # # wait for the animation
+        sleep(.1)
+
+        return self.browser.find_element_by_id('div_item_delete')

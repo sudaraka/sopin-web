@@ -5,18 +5,48 @@
 <script type="text/javascript">
 //<![CDATA[
 
-$('body').on('hidden.bs.modal', '.modal', function() {
+$('#div_item_form').on('hidden.bs.modal', function() {
   $(this).removeData('bs.modal');
 });
+
+$('#div_item_delete').on('show.bs.modal', function(e) {
+    $('#lnk_delete_confirm').prop('href', $(e.relatedTarget).data('url'));
+
+    $('.modal-body', this)
+        .append('Remove item ')
+        .append(
+            $('<strong>')
+                .text(
+                    $('td.name', $(e.relatedTarget).closest('tr'))
+                       .text()
+                )
+        )
+        .append('?')
+        ;
+});
+
+{% if messages %}
+window.setTimeout("$('p.row.alert').hide(function(){ $(this).remove(); });", 5000);
+{% endif %}
 
 //]>
 </script>
 {% endblock %}
 
 {% block content %}
+
 <div class="container">
 
     <div class="page-header">
+
+        {% if messages %}
+            {% for m in messages %}
+            <p class="row alert{% if m.tags %} alert-{{ m.tags }}{% endif %}">{{ m }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="clearfix"></div>
+
         <h3 class="col-xs-10">Item Maintenance</h3>
 
         <button type="button" id="btn_new_item"
@@ -59,7 +89,13 @@ $('body').on('hidden.bs.modal', '.modal', function() {
                                 data-target="#div_item_form"
                                 data-remote="{% url 'item_maintenance_form' item.id %}">
                                 <i class="fa fa-edit"></i></button>
-                            <button class="btn btn-danger btn-sm"><strong>&times;</strong></button>
+                            <button type="button"
+                                class="btn btn-danger btn-sm btn-delete"
+                                data-toggle="modal" data-backdrop="static"
+                                data-keyboard="false"
+                                data-target="#div_item_delete"
+                                data-url="{% url 'item_maintenance_delete' item.id %}">
+                                <strong>&times;</strong></button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -76,6 +112,18 @@ $('body').on('hidden.bs.modal', '.modal', function() {
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content"></div>
+    </div>
+</div>
+<div id="div_item_delete" class="modal fade" tabindex="-1" role="dialog"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" id="lnk_delete_confirm">Yes</a>
+                <button type="button" class="btn btn-success" data-dismiss="modal">No</button>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
