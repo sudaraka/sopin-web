@@ -23,6 +23,7 @@ different states.
 """
 
 import copy
+import datetime
 import random
 
 from operator import itemgetter
@@ -84,9 +85,10 @@ class ItemsPageVisitWithData(FunctionalTestBase):
     test_data = [
         {'name': 'TEST #1', },
         {'name': 'TEST #2', 'unit_symbol': 'Bottel', 'heavy': True,
-         'last_purchase': True},
+         'last_purchase': datetime.date(2013, 9, 28)},
         {'name': 'TEST #4', 'unit_symbol': 'Pkt', 'unit_weight': 200,
-         'purchase_threshold': 10, 'last_purchase': True},
+         'purchase_threshold': 10,
+         'last_purchase': datetime.date(2014, 2, 16)},
         {'name': 'TEST #3', 'unit_weight': 400, 'purchase_threshold': 15,
          'extended_threshold': 4, 'heavy': True, },
     ]
@@ -103,8 +105,9 @@ class ItemsPageVisitWithData(FunctionalTestBase):
             created_item = Item.objects.create(**i)
 
             if 'last_purchase' in item:
-                item['last_purchase'] = Purchase.objects.create(
-                    item=created_item, quantity=random.randrange(1, 11))
+                Purchase.objects.create(item=created_item,
+                                        quantity=random.randrange(1, 11),
+                                        date=item['last_purchase'])
 
         super(ItemsPageVisitWithData, self).setUp()
 
@@ -158,7 +161,7 @@ class ItemsPageVisitWithData(FunctionalTestBase):
 
             if 'last_purchase' in item:
                 last_purchase_text = \
-                    item['last_purchase'].date.strftime('%B, %-d')
+                    item['last_purchase'].strftime('%B, %-d')
             else:
                 last_purchase_text = 'n/a'
 
@@ -167,10 +170,20 @@ class ItemsPageVisitWithData(FunctionalTestBase):
                               'tbody tr:nth-child(%d) .last_purchase' %
                               row_index).text)
 
-            btn_edit = table.find_element_by_css_selector(
+            # Test Edit button
+            button = table.find_element_by_css_selector(
                 'tbody tr:nth-child(%d) .btn-edit' % row_index)
 
             self.assertEqual(reverse('item_maintenance_form',
                                      args=(stored_items[row_index - 1]['id'],
                                            )),
-                             btn_edit.get_attribute('data-remote'))
+                             button.get_attribute('data-remote'))
+
+            # Test Delete button
+            button = table.find_element_by_css_selector(
+                'tbody tr:nth-child(%d) .btn-delete' % row_index)
+
+            self.assertEqual(reverse('item_maintenance_delete',
+                                     args=(stored_items[row_index - 1]['id'],
+                                           )),
+                             button.get_attribute('data-url'))

@@ -18,6 +18,8 @@
 
 """ Data models that make up the shopping inventory """
 
+import datetime
+
 from django.db import models
 
 
@@ -56,7 +58,7 @@ class Purchase(models.Model):
 
     item = models.ForeignKey(Item)
     quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1)
-    date = models.DateTimeField(auto_now_add=True, db_index=True)
+    date = models.DateField(default=datetime.date.today(), db_index=True)
 
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Purchase model """

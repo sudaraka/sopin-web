@@ -99,11 +99,13 @@ class ItemModelTest(TestCase):
         item2 = Item.objects.create(name='b')
         Item.objects.create(name='c')
 
-        Purchase.objects.create(item=item1)
-        Purchase.objects.create(item=item1)
-        Purchase.objects.create(item=item2)
-        item1_last_purchase = Purchase.objects.create(item=item1)
-        item2_last_purchase = Purchase.objects.create(item=item2)
+        Purchase.objects.create(item=item1, date=datetime.date(2014, 1, 1))
+        item1_last_purchase = Purchase.objects.create(
+            item=item1, date=datetime.date(2014, 1, 3))
+        Purchase.objects.create(item=item2, date=datetime.date(2014, 1, 1))
+        Purchase.objects.create(item=item1, date=datetime.date(2014, 1, 2))
+        item2_last_purchase = Purchase.objects.create(
+            item=item2, date=datetime.date(2014, 1, 2))
 
         self.assertEqual(item1.last_purchase(), item1_last_purchase)
         self.assertEqual(item2.last_purchase(), item2_last_purchase)
@@ -121,9 +123,7 @@ class PurchaseModelTest(TestCase):
 
         self.assertEqual(purchase.item, item)
         self.assertEqual(purchase.quantity, 1)
-
-        # Date field is only updated after saving the record
-        self.assertEqual(purchase.date, None)
+        self.assertEqual(purchase.date, datetime.date.today())
 
     def test_saving_purchase_with_default_values(self):
         """ Test saving item records with default values """
@@ -137,8 +137,6 @@ class PurchaseModelTest(TestCase):
         self.assertIn(purchase, Purchase.objects.all())
 
         # Date should now be populated
-        self.assertAlmostEqual(purchase.date.timestamp(),
-                               datetime.datetime.now().timestamp(), delta=2)
 
     def test_retrieved_purchases_are_sorted_in_reverse_order(self):
         """
