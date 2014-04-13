@@ -160,7 +160,7 @@ class FunctionalTestBase(LiveServerTestCase):
         # # wait for the animation
         sleep(.1)
 
-        return self.browser.find_element_by_id('div_item_form')
+        return self.browser.find_element_by_id('div_modal_form')
 
     def open_edit_item_form(self, from_item_list_row):
         """
@@ -177,7 +177,7 @@ class FunctionalTestBase(LiveServerTestCase):
         # # wait for the animation
         sleep(.1)
 
-        return self.browser.find_element_by_id('div_item_form')
+        return self.browser.find_element_by_id('div_modal_form')
 
     def open_delete_confirmation_dialog(self, from_item_list_row):
         """

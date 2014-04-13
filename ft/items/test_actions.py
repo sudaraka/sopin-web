@@ -54,7 +54,7 @@ class ItemsPageVisit(FunctionalTestBase):
         # wait for the animation
         sleep(.1)
 
-        modal = self.browser.find_element_by_id('div_item_form')
+        modal = self.browser.find_element_by_id('div_modal_form')
         self.assertTrue(modal.is_displayed())
         self.assertIn('New Item', modal.text)
 
@@ -97,7 +97,7 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         # wait for the animation
         sleep(.1)
 
-        modal = self.browser.find_element_by_id('div_item_form')
+        modal = self.browser.find_element_by_id('div_modal_form')
 
         self.assertTrue(modal.is_displayed())
         self.assertIn('Edit Item', modal.text)
