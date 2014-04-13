@@ -43,7 +43,7 @@ class ItemsPageVisit(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
-    def xtest_elements_with_no_user_generated_content(self):
+    def test_elements_with_no_user_generated_content(self):
         """
         Verify all the required elements are available in items page HTML.
 

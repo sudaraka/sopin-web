@@ -69,6 +69,7 @@ window.setTimeout("$('p.row.alert').hide(function(){ $(this).remove(); });", 500
                         <th class="unit_symbol text-right">Unit Symbol</th>
                         <th class="unit_weight text-right">Unit Weight</th>
                         <th class="purchase_threshold text-right">Purchase Threshold</th>
+                        <th class="last_purchase">Last Purchase</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -82,6 +83,13 @@ window.setTimeout("$('p.row.alert').hide(function(){ $(this).remove(); });", 500
                             {{ item.unit_weight }}g
                         </td>
                         <td class="purchase_threshold text-right">{{ item.purchase_threshold|add:item.extended_threshold }} days</td>
+                        <td class="last_purchase">
+                            {% if item.last_purchase %}
+                                {{ item.last_purchase.date|date:'F, j' }}<sup>{{ item.last_purchase.date|date:'S' }}</sup>
+                            {% else %}
+                                n/a
+                            {% endif %}
+                        </td>
                         <td>
                             <button type="button"
                                 class="btn btn-default btn-sm btn-edit"
