@@ -33,11 +33,36 @@ class Item(models.Model):
     extended_threshold = models.IntegerField(null=False, blank=True, default=0)
     heavy = models.BooleanField(default=False)
 
+    def last_purchase(self):
+        """ Return the most recent Purchase for this item """
+
+        try:
+            return Purchase.objects.filter(item__id=self.id)[0]
+        except IndexError:
+            return None
+
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Item model """
 
-        ordering = ('name', )
+        ordering = ['name']
 
         # Set following fields manually since our models are in sub-directories
         app_label = 'data'
         db_table = 'sopin_item'
+
+
+class Purchase(models.Model):
+    """ Purchase data model definition """
+
+    item = models.ForeignKey(Item)
+    quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1)
+    date = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:  # pylint: disable=I0011,C1001
+        """ Meta class for Purchase model """
+
+        ordering = ['-date']
+
+        # Set following fields manually since our models are in sub-directories
+        app_label = 'data'
+        db_table = 'sopin_purchase'

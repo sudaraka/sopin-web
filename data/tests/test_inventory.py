@@ -18,11 +18,13 @@
 
 """ UI Unit test for inventory data models """
 
+import datetime
+
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
-from data.models.inventory import Item
+from data.models.inventory import Item, Purchase
 
 
 class ItemModelTest(TestCase):
@@ -85,3 +87,71 @@ class ItemModelTest(TestCase):
         i4 = Item.objects.create(name='B')
 
         self.assertEqual(list(Item.objects.all()), [i1, i4, i2, i3])
+
+    def test_item_object_contains_last_purchase_info(self):
+        """
+        Verify that item carries with it the information of last purchase of
+        that item
+
+        """
+
+        item1 = Item.objects.create(name='a')
+        item2 = Item.objects.create(name='b')
+        Item.objects.create(name='c')
+
+        Purchase.objects.create(item=item1)
+        Purchase.objects.create(item=item1)
+        Purchase.objects.create(item=item2)
+        item1_last_purchase = Purchase.objects.create(item=item1)
+        item2_last_purchase = Purchase.objects.create(item=item2)
+
+        self.assertEqual(item1.last_purchase(), item1_last_purchase)
+        self.assertEqual(item2.last_purchase(), item2_last_purchase)
+        self.assertEqual(Item.objects.get(pk=3).last_purchase(), None)
+
+
+class PurchaseModelTest(TestCase):
+    """ Test "Purchase" data model """
+
+    def test_default_values(self):
+        """ Test if vanilla item is created with correct default values """
+
+        item = Item()
+        purchase = Purchase(item=item)
+
+        self.assertEqual(purchase.item, item)
+        self.assertEqual(purchase.quantity, 1)
+
+        # Date field is only updated after saving the record
+        self.assertEqual(purchase.date, None)
+
+    def test_saving_purchase_with_default_values(self):
+        """ Test saving item records with default values """
+
+        item = Item()
+        item.save()
+
+        purchase = Purchase(item=item)
+        purchase.save()
+
+        self.assertIn(purchase, Purchase.objects.all())
+
+        # Date should now be populated
+        self.assertAlmostEqual(purchase.date.timestamp(),
+                               datetime.datetime.now().timestamp(), delta=2)
+
+    def test_retrieved_purchases_are_sorted_in_reverse_order(self):
+        """
+        Purchases retrieved back should be sorted in the reverse order of their
+        creation
+
+        """
+
+        item = Item.objects.create()
+
+        p1 = Purchase.objects.create(item=item)
+        p2 = Purchase.objects.create(item=item)
+        p3 = Purchase.objects.create(item=item)
+        p4 = Purchase.objects.create(item=item)
+
+        self.assertEqual(list(Purchase.objects.all()), [p4, p3, p2, p1])
