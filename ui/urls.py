@@ -29,4 +29,6 @@ urlpatterns = patterns(
         'views.item_maintenance_form', name='item_maintenance_form'),
     url(r'^item-maintenance/remove/(?P<itemid>\d+)/$',
         'views.item_maintenance_delete', name='item_maintenance_delete'),
+    url(r'^item-maintenance/purchase/$',
+        'views.item_purchase_form', name='item_purchase_form'),
 )

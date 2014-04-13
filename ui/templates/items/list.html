@@ -92,7 +92,13 @@ window.setTimeout("$('p.row.alert').hide(function(){ $(this).remove(); });", 500
                         </td>
                         <td>
                             <button type="button"
-                                class="btn btn-default btn-sm btn-edit"
+                                class="btn btn-warning btn-sm btn-purchase"
+                                data-toggle="modal" data-backdrop="static"
+                                data-target="#div_purchase_form"
+                                data-remote="{% url 'item_purchase_form'%}?itemid={{ item.id }}">
+                                <i class="fa fa-usd" style="font-weight: bolder;"></i></button>
+                            <button type="button"
+                                class="btn btn-primary btn-sm btn-edit"
                                 data-toggle="modal" data-backdrop="static"
                                 data-target="#div_item_form"
                                 data-remote="{% url 'item_maintenance_form' item.id %}">

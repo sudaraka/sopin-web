@@ -20,9 +20,9 @@
 
 import json
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.contrib import messages
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
 from app.settings import SITE_TITLE, VERSION
 
@@ -109,3 +109,9 @@ def item_maintenance_delete(request, itemid=''):
         messages.error(request, e)
 
     return redirect('item_maintenance')
+
+
+def item_purchase_form(request):
+    """ Render item purchase form, and handle the submitted data. """
+
+    pass
