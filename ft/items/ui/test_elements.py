@@ -192,6 +192,6 @@ class ItemsPageVisitWithData(FunctionalTestBase):
             button = table.find_element_by_css_selector(
                 'tbody tr:nth-child(%d) .btn-purchase' % row_index)
 
-            self.assertEqual(reverse('item_purchase_form') + '?itemid=' +
+            self.assertEqual(reverse('item_purchase_form') + '?item=' +
                              str(stored_items[row_index - 1]['id']),
                              button.get_attribute('data-remote'))

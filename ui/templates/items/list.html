@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="/static/css/datepicker.css" />
+{% endblock %}
+
 {% block javascripts %}
 <script src="/static/js/jquery.validate.js"></script>
+<script src="/static/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
 //<![CDATA[
 
@@ -95,7 +100,7 @@ window.setTimeout("$('p.row.alert').hide(function(){ $(this).remove(); });", 500
                                 class="btn btn-warning btn-sm btn-purchase"
                                 data-toggle="modal" data-backdrop="static"
                                 data-target="#div_modal_form"
-                                data-remote="{% url 'item_purchase_form'%}?itemid={{ item.id }}">
+                                data-remote="{% url 'item_purchase_form'%}?item={{ item.id }}">
                                 <i class="fa fa-usd" style="font-weight: bolder;"></i></button>
                             <button type="button"
                                 class="btn btn-primary btn-sm btn-edit"

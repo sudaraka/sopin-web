@@ -163,3 +163,24 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         self.assertIn('Item was successfully removed',
                       self.browser.find_element_by_css_selector(
                           'p.row.alert').text)
+
+    def test_purchase_button_displays_form_popup_with_item_and_inputs(self):
+        """
+        Verify that "Purchase" button opens the pop-up for item purchase form
+        with item data already populated.
+
+        """
+
+        # Shopper visit the item maintenance page and see number of items on
+        # the listing page. She clicks on the "Purchase" button on the first
+        # item.
+        self.browser.find_element_by_css_selector(
+            '.items-table table tr:nth-child(1) button.btn-purchase').click()
+
+        # wait for the animation
+        sleep(.1)
+
+        modal = self.browser.find_element_by_id('div_modal_form')
+
+        self.assertTrue(modal.is_displayed())
+        self.assertIn('Purchase Item', modal.text)
