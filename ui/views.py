@@ -23,10 +23,11 @@ import json
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils.datastructures import MultiValueDictKeyError
 
 from app.settings import SITE_TITLE, VERSION
 
-from ui.forms import ItemForm
+from ui.forms import ItemForm, PurchaseForm
 
 from data.models.inventory import Item
 
@@ -114,4 +115,21 @@ def item_maintenance_delete(request, itemid=''):
 def item_purchase_form(request):
     """ Render item purchase form, and handle the submitted data. """
 
-    pass
+    form = None
+    item = Item()
+
+    if 'POST' == request.method:
+        pass
+    else:
+        try:
+            itemid = int(request.GET['item'])
+            if 0 < itemid:
+                item = Item.objects.get(pk=itemid)
+                form = PurchaseForm(data={'item': item})
+        except Item.DoesNotExist:
+            pass
+        except MultiValueDictKeyError:
+            pass
+
+    return render(request, 'items/purchase.html', {'form': form,
+                                                   'item': item})

@@ -18,9 +18,11 @@
 
 """ Forms handlers for the web site """
 
+import datetime
+
 from django import forms
 
-from data.models.inventory import Item
+from data.models.inventory import Item, Purchase
 
 
 class ItemForm(forms.models.ModelForm):
@@ -64,5 +66,34 @@ class ItemForm(forms.models.ModelForm):
                 'class': 'ull-left',
                 'type': 'checkbox',
                 'style': 'padding-top: 4px;',
+            }),
+        }
+
+
+class PurchaseForm(forms.models.ModelForm):
+    """ Form for item purchase """
+
+    class Meta:  # pylint: disable=I0011,C1001
+        """ Meta class for item puchase form """
+
+        model = Purchase
+        labels = {
+            'date': 'Date',
+            'quantity': 'Quantity',
+        }
+        widgets = {
+            'item': forms.fields.HiddenInput(),
+            'date': forms.fields.DateInput(attrs={
+                'required': 'required',
+                'class': 'form-control datepicker',
+                'data-date-format': 'yyyy-mm-dd',
+                'readonly': 'readonly',
+                'value': datetime.date.today().strftime('%Y-%m-%d')
+            }),
+            'quantity': forms.fields.TextInput(attrs={
+                'required': 'required',
+                'maxlength': 7,
+                'type': 'number',
+                'class': 'form-control',
             }),
         }

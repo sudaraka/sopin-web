@@ -57,8 +57,8 @@ class Purchase(models.Model):
     """ Purchase data model definition """
 
     item = models.ForeignKey(Item)
-    quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1)
     date = models.DateField(default=datetime.date.today(), db_index=True)
+    quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1)
 
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Purchase model """

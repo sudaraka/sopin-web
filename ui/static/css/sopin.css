@@ -50,3 +50,7 @@ label {
     text-overflow: ellipsis;
     margin: 0;
 }
+
+.datepicker {
+    z-index: 2000 !important;
+}
