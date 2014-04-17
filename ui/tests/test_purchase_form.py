@@ -137,3 +137,22 @@ class ItemPurchaseFormTest(BaseUnitTestCase):
 
         self.assertEqual(bytes(json.dumps(expected_response), 'utf-8'),
                          response.content)
+
+    def test_saving_purchase_clears_the_item_extended_threshold(self):
+        """
+        When a purchase is saved, the item's extended_threshold should be reset
+        back to zero
+
+        """
+
+        item = Item.objects.create(name='test item #1', extended_threshold=5)
+        self.assertEqual(item.extended_threshold, 5)
+
+        self.client.post(self.uri, data={
+            'item': str(item.id),
+            'quantity': '1',
+            'date': datetime.date.today().strftime('%Y-%m-%d'),
+        })
+
+        saved_purchase = Purchase.objects.first()
+        self.assertEqual(saved_purchase.item.extended_threshold, 0)

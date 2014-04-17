@@ -60,6 +60,15 @@ class Purchase(models.Model):
     date = models.DateField(default=datetime.date.today(), db_index=True)
     quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1)
 
+    def save(self, *args, **kwargs):  # pylint: disable=I0011,E1002
+        """ Override parent "save" method to adjust Item parameters """
+
+        super(Purchase, self).save(*args, **kwargs)
+
+        if 0 != self.item.extended_threshold:
+            self.item.extended_threshold = 0
+            self.item.save()
+
     class Meta:  # pylint: disable=I0011,C1001
         """ Meta class for Purchase model """
 
