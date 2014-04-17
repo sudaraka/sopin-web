@@ -119,7 +119,18 @@ def item_purchase_form(request):
     item = Item()
 
     if 'POST' == request.method:
-        pass
+        form = PurchaseForm(data=request.POST)
+
+        if form.is_valid():  # pragma: no branch
+            form.save()
+
+            result = {
+                'code': 0,
+                'message': 'success',
+            }
+
+            return HttpResponse(json.dumps(result),
+                                content_type='application/json')
     else:
         try:
             itemid = int(request.GET['item'])

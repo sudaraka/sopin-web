@@ -85,7 +85,7 @@ class PurchaseForm(forms.models.ModelForm):
             'item': forms.fields.HiddenInput(),
             'date': forms.fields.DateInput(attrs={
                 'required': 'required',
-                'class': 'form-control datepicker',
+                'class': 'form-control purchase-date',
                 'data-date-format': 'yyyy-mm-dd',
                 'readonly': 'readonly',
                 'value': datetime.date.today().strftime('%Y-%m-%d')

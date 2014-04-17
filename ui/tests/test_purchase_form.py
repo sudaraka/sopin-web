@@ -18,7 +18,7 @@
 
 """ UI Unit test for item purchase form on item maintenance page """
 
-import random
+import datetime
 import json
 
 from ui.tests.base import BaseUnitTestCase
@@ -52,18 +52,36 @@ class ItemPurchaseFormTest(BaseUnitTestCase):
         self.assertIn('form', response.context)
         self.assertEqual(response.context['form'], None)
 
+        self.assertIn('item', response.context)
+        self.assertEqual(type(response.context['item']), type(Item()))
+
         # Non-existing item specified
         response = self.client.get(self.uri + '?item=1')
 
         self.assertIn('form', response.context)
         self.assertEqual(response.context['form'], None)
 
+        self.assertIn('item', response.context)
+        self.assertEqual(type(response.context['item']), type(Item()))
+
         # Valid item specified
-        Item.objects.create()
+        item = Item.objects.create()
         response = self.client.get(self.uri + '?item=1')
 
         self.assertIn('form', response.context)
         self.assertEqual(type(response.context['form']), type(PurchaseForm()))
+
+        self.assertIn('item', response.context)
+        self.assertEqual(response.context['item'], item)
+
+        # Invalid item specified
+        response = self.client.get(self.uri + '?item=-1')
+
+        self.assertIn('form', response.context)
+        self.assertEqual(response.context['form'], None)
+
+        self.assertIn('item', response.context)
+        self.assertEqual(type(response.context['item']), type(Item()))
 
     def test_template_receive_the_item_via_context(self):
         """
@@ -78,3 +96,44 @@ class ItemPurchaseFormTest(BaseUnitTestCase):
         self.assertIn('item', response.context)
         self.assertEqual(response.context['item'], item)
 
+    def test_form_POST_saves_the_new_purchase(self):
+        """
+        Make sure we can create and save new item purchase by posting the form.
+
+        """
+
+        item = Item.objects.create(name='test item #1')
+        self.client.post(self.uri, data={
+            'item': str(item.id),
+            'quantity': '1',
+            'date': datetime.date.today().strftime('%Y-%m-%d'),
+        })
+
+        # Verify that we have one item stored
+        self.assertEqual(Purchase.objects.count(), 1)
+
+        # Verify the saved item has the same information posted
+        saved_purchase = Purchase.objects.first()
+        self.assertEqual(saved_purchase.quantity, 1)
+        self.assertEqual(saved_purchase.date, datetime.date.today())
+        self.assertEqual(saved_purchase.item, item)
+
+    def test_item_data_POST_return_JSON_response(self):
+        """ Test if POSTing data to item form returns a valid JSON reponse """
+
+        item = Item.objects.create(name='test item #1')
+        response = self.client.post(self.uri, data={
+            'item': str(item.id),
+            'quantity': '1',
+            'date': datetime.date.today().strftime('%Y-%m-%d'),
+        })
+
+        self.assertIn('application/json', response['Content-Type'])
+
+        expected_response = {
+            'code': 0,
+            'message': 'success',
+        }
+
+        self.assertEqual(bytes(json.dumps(expected_response), 'utf-8'),
+                         response.content)
