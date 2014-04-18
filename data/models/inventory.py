@@ -20,11 +20,47 @@
 
 import datetime
 
-from django.db import models
+from django.db import models, connection
+
+
+class ItemManager(models.Manager):
+    """ Model manager for Items """
+
+    NEAR_THRESHOLD = 14
+
+    def running_out(self):
+        """
+        Return a list of Items that near the threshold.
+
+        Note: "Near Threshold" means the number of days since last purchase
+        either passed the purchase_threshold or within NEAR_THRESHOLD days
+
+        """
+
+        cursor = connection.cursor()
+        cursor.execute("""
+                       select
+                        i.id
+                       from sopin_item as i
+                       inner join sopin_purchase as p
+                        on p.item_id = i.id
+                       group by i.id
+                       having (julianday('now') - julianday(max(p.date))) > %d
+                       """ % self.NEAR_THRESHOLD)
+
+        result = []
+        for row in cursor.fetchall():
+            item = self.model(pk=row[0])
+
+            result.append(item)
+
+        return result
 
 
 class Item(models.Model):
     """ Item data model definition """
+
+    objects = ItemManager()
 
     name = models.CharField(max_length=32, unique=True, blank=False,
                             null=False)
