@@ -26,31 +26,38 @@ from django.db import models, connection
 class ItemManager(models.Manager):
     """ Model manager for Items """
 
-    NEAR_THRESHOLD = 14
-
     def running_out(self):
         """
         Return a list of Items that near the threshold.
 
         Note: "Near Threshold" means the number of days since last purchase
-        either passed the purchase_threshold or within NEAR_THRESHOLD days
+        less than 66% of the total threshold period.
 
         """
 
         cursor = connection.cursor()
-        cursor.execute("""
-                       select
-                        i.id
-                       from sopin_item as i
-                       inner join sopin_purchase as p
-                        on p.item_id = i.id
-                       group by i.id
-                       having (julianday('now') - julianday(max(p.date))) > %d
-                       """ % self.NEAR_THRESHOLD)
+        cursor.execute(
+            """
+            select
+                i.id,
+                julianday('now') - julianday(max(p.date)) as stock_days
+            from
+                sopin_item as i
+            inner join sopin_purchase as p
+                on p.item_id = i.id
+            group by
+                i.id
+            having
+                stock_days
+                    > (i.purchase_threshold + i.extended_threshold ) * .66
+            order by
+                stock_days asc
+            """)
 
         result = []
         for row in cursor.fetchall():
             item = self.model(pk=row[0])
+            item.days_after_purchase = row[1]
 
             result.append(item)
 
@@ -70,6 +77,8 @@ class Item(models.Model):
     purchase_threshold = models.IntegerField(default=21)
     extended_threshold = models.IntegerField(null=False, blank=True, default=0)
     heavy = models.BooleanField(default=False)
+
+    days_after_purchase = None
 
     def last_purchase(self):
         """ Return the most recent Purchase for this item """
