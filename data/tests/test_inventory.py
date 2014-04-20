@@ -116,13 +116,19 @@ class ItemModelTest(TestCase):
     def test_running_out_item_stock_age_is_correctly_calculated(self):
         """ Verify that running_out item's stock_age is correct """
 
-        item1 = Item.objects.create(name='a')
+        item = Item.objects.create(name='a')
         Purchase.objects.create(
-            item=item1, date=datetime.date.today() - datetime.timedelta(18))
+            item=item, date=datetime.date.today() - datetime.timedelta(18))
 
-        item2 = Item.objects.create(name='b')
+        item = Item.objects.create(name='b')
         Purchase.objects.create(
-            item=item2, date=datetime.date.today() - datetime.timedelta(22))
+            item=item, date=datetime.date.today() - datetime.timedelta(22))
+
+        item = Item.objects.create(name='c', unit_symbol='Pkt',
+                                   unit_weight=400, purchase_threshold=35,
+                                   heavy=True)
+        Purchase.objects.create(
+            item=item, date=datetime.date.today() - datetime.timedelta(32))
 
         returned_items = Item.objects.running_out()
 
@@ -132,6 +138,13 @@ class ItemModelTest(TestCase):
 
         self.assertAlmostEqual(returned_items[1].stock_age, 22, delta=.9)
         self.assertEqual(returned_items[1].stock_age_percent, 0)
+
+        self.assertEqual(returned_items[2].name, 'c')
+        self.assertEqual(returned_items[2].unit_symbol, 'Pkt')
+        self.assertEqual(returned_items[2].unit_weight, 400)
+        self.assertEqual(returned_items[2].purchase_threshold, 35)
+        self.assertEqual(returned_items[2].extended_threshold, 0)
+        self.assertEqual(returned_items[2].heavy, True)
 
 
 class PurchaseModelTest(TestCase):

@@ -41,9 +41,13 @@ class ItemManager(models.Manager):
             """
             select
                 i.id,
-                julianday('now') - julianday(max(p.date)) as stock_days,
+                i.name,
+                i.unit_symbol,
+                i.unit_weight,
                 i.purchase_threshold,
-                i.extended_threshold
+                i.extended_threshold,
+                i.heavy,
+                julianday('now') - julianday(max(p.date)) as stock_days
             from
                 sopin_item as i
             inner join sopin_purchase as p
@@ -57,12 +61,14 @@ class ItemManager(models.Manager):
             """ % RUNOUT_DAYS)
 
         result = []
-        for row in cursor.fetchall():
-            item = self.model(pk=row[0])
-            item.stock_age = row[1]
+        for i in cursor.fetchall():
+            item = self.model(pk=i[0], name=i[1], unit_symbol=i[2],
+                              unit_weight=i[3], purchase_threshold=i[4],
+                              extended_threshold=i[5], heavy=i[6])
+            item.stock_age = i[7]
 
-            if row[1] < row[2] + row[3]:
-                item.stock_age_percent = row[1] / (row[2] + row[3]) * 100
+            if i[7] < i[4] + i[5]:
+                item.stock_age_percent = i[7] / (i[4] + i[5]) * 100
 
             result.append(item)
 
