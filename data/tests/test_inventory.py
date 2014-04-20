@@ -116,14 +116,22 @@ class ItemModelTest(TestCase):
     def test_running_out_item_stock_age_is_correctly_calculated(self):
         """ Verify that running_out item's stock_age is correct """
 
-        item = Item.objects.create(name='a')
-
+        item1 = Item.objects.create(name='a')
         Purchase.objects.create(
-            item=item, date=datetime.date.today() - datetime.timedelta(18))
+            item=item1, date=datetime.date.today() - datetime.timedelta(18))
 
-        self.assertEqual(Item.objects.running_out()[0].stock_age, 18)
-        self.assertEqual(Item.objects.running_out()[0].stock_age_precent,
-                         18 / 21 * 100)
+        item2 = Item.objects.create(name='b')
+        Purchase.objects.create(
+            item=item2, date=datetime.date.today() - datetime.timedelta(22))
+
+        returned_items = Item.objects.running_out()
+
+        self.assertAlmostEqual(returned_items[0].stock_age, 18, delta=.9)
+        self.assertEqual(returned_items[0].stock_age_precent,
+                         returned_items[0].stock_age / 21 * 100)
+
+        self.assertAlmostEqual(returned_items[1].stock_age, 22, delta=.9)
+        self.assertEqual(returned_items[1].stock_age_precent, 0)
 
 
 class PurchaseModelTest(TestCase):
