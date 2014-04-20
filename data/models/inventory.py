@@ -62,7 +62,7 @@ class ItemManager(models.Manager):
             item.stock_age = row[1]
 
             if row[1] < row[2] + row[3]:
-                item.stock_age_precent = row[1] / (row[2] + row[3]) * 100
+                item.stock_age_percent = row[1] / (row[2] + row[3]) * 100
 
             result.append(item)
 
@@ -84,7 +84,7 @@ class Item(models.Model):
     heavy = models.BooleanField(default=False)
 
     stock_age = None
-    stock_age_precent = 0
+    stock_age_percent = 0
 
     def last_purchase(self):
         """ Return the most recent Purchase for this item """

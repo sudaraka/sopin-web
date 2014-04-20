@@ -42,7 +42,7 @@ class ItemModelTest(TestCase):
         self.assertEqual(item.extended_threshold, 0)
         self.assertEqual(item.heavy, False)
         self.assertEqual(item.stock_age, None)
-        self.assertEqual(item.stock_age_precent, 0)
+        self.assertEqual(item.stock_age_percent, 0)
 
     def test_saving_item_with_default_values(self):
         """ Test saving item records with default values """
@@ -127,11 +127,11 @@ class ItemModelTest(TestCase):
         returned_items = Item.objects.running_out()
 
         self.assertAlmostEqual(returned_items[0].stock_age, 18, delta=.9)
-        self.assertEqual(returned_items[0].stock_age_precent,
+        self.assertEqual(returned_items[0].stock_age_percent,
                          returned_items[0].stock_age / 21 * 100)
 
         self.assertAlmostEqual(returned_items[1].stock_age, 22, delta=.9)
-        self.assertEqual(returned_items[1].stock_age_precent, 0)
+        self.assertEqual(returned_items[1].stock_age_percent, 0)
 
 
 class PurchaseModelTest(TestCase):
