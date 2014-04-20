@@ -57,9 +57,17 @@ class HomepageFirstVisit(FunctionalTestBase):
         self.assertEqual('New Round',
                          area1.find_element_by_id('btn_new_round').text)
 
-        # 3. There is another section with the sub-heading "Items Needed" that
-        #    show the message "No items available".
+        # 4. On the right hand side of the screen, there is a section titled
+        #    "Items to Buy" which shows the message "No items need buying"
         area2 = self.browser.find_element_by_class_name('right-pane')
-        self.assertEqual('Available Items',
-                         area2.find_element_by_tag_name('h3').text)
-        self.assertIn('No items available', area2.text)
+        self.assertEqual('Items to Buy',
+                         area2.find_element_by_css_selector('.to-buy h3').text)
+        self.assertIn('No items need buying', area2.text)
+
+        # 5. Just under the "Items to Buy" section, there is another section
+        #    with the sub-heading "Items Running Out" that show the message "No
+        #    items running out".
+        self.assertEqual('Items Running Out',
+                         area2.find_element_by_css_selector('.running-out h3')
+                         .text)
+        self.assertIn('No items running out', area2.text)
