@@ -33,10 +33,27 @@
                 <div class="page-header">
                     <h3 class="col-xs-9">Items to Buy</h3>
 
+                    {% if to_buy_list %}
+                    <button type="button" class="btn btn-warning">
+                        <i class="fa fa-download"></i>
+                    </button>
+                    {% endif %}
+
                     <div class="clearfix"></div>
                 </div>
 
-                <div>No items need buying</div>
+                {% if to_buy_list %}
+                <ul class="list-group">
+                {% for item in to_buy_list %}
+                    <li class="list-group-item">
+                        {{ item.name }}
+                        <small>{{ item.unit_weight }}g {{ item.unit_symbol }}</small>
+                    </li>
+                {% endfor %}
+                </ul>
+                {% else %}
+                No items need buying
+                {% endif %}
 
             </div>
 
@@ -51,7 +68,7 @@
                 {% if running_out_list %}
                 <ul class="list-group">
                 {% for item in running_out_list %}
-                    <li class="list-group-item">
+                    <li class="list-group-item text-muted">
                         {{ item.name }}
 
                         <div class="progress">

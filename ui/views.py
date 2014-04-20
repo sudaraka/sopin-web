@@ -36,20 +36,26 @@ def homepage_view(request):
     """ Process homepage url '/' and render the template 'home.html' """
 
     running_out = []
+    to_buy = []
 
     for i in Item.objects.running_out():
         if 0 == i.stock_age_percent:
-            pass
+            to_buy.append(i)
         else:
             running_out.append(i)
 
     if 1 > len(running_out):
         running_out = None
 
+    if 1 > len(to_buy):
+        to_buy = None
+
     return render(request, 'home.html', {'site_title': SITE_TITLE,
                                          'site_version': ('v%d.%d %s' %
                                                           VERSION).strip(),
-                                         'running_out_list': running_out})
+                                         'running_out_list': running_out,
+                                         'to_buy_list': to_buy,
+                                         })
 
 
 def item_maintenance_view(request):

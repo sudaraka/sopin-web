@@ -38,7 +38,7 @@ class HomepageFirstVisit(FunctionalTestBase):
 
     """
 
-    def xtest_elements_with_no_user_generated_content(self):
+    def test_elements_with_no_user_generated_content(self):
         """
         Verify all the required elements are available in homepage HTML.
 
@@ -88,34 +88,34 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
 
     test_data = [
         # Item without purchase
-        {'name': 'test item #1', },
+        {'name': 'test item A', },
 
         # Item passed threshold
-        {'name': 'test item #2',
+        {'name': 'test item B',
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
 
         # Item purchased few weeks ago (in threshold, running out)
-        {'name': 'test item #3',
+        {'name': 'test item C',
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
 
         # Item purchased few days ago (in threshold, NOT running out)
-        {'name': 'test item #4',
+        {'name': 'test item D',
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
-        {'name': 'test item #5',
+        {'name': 'test item E',
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
-        {'name': 'test item #6',
+        {'name': 'test item F',
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
 
         # Same data with non-default threshold
-        {'name': 'test item #7', 'purchase_threshold': 10,
+        {'name': 'test item G', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
-        {'name': 'test item #8', 'purchase_threshold': 10,
+        {'name': 'test item H', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
-        {'name': 'test item #9', 'purchase_threshold': 10,
+        {'name': 'test item I', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
-        {'name': 'test item #10', 'purchase_threshold': 10,
+        {'name': 'test item J', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
-        {'name': 'test item #11', 'purchase_threshold': 10,
+        {'name': 'test item K', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
     ]
 
@@ -152,9 +152,121 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
         self.assertNotIn('No items running out', area.text)
 
         # 2. The correct items are listed in the "Items Running Out" list.
-        self.assertIn('test item #3',
+        self.assertIn('test item C',
                       area.find_element_by_class_name('list-group').text)
-        self.assertIn('test item #10',
+        self.assertIn('test item J',
                       area.find_element_by_class_name('list-group').text)
-        self.assertIn('test item #11',
+        self.assertIn('test item K',
                       area.find_element_by_class_name('list-group').text)
+
+        for item in self.test_data:
+            if item['name'] in [
+                'test item C',
+                'test item J',
+                'test item K',
+            ]:
+                continue
+
+            self.assertNotIn(item['name'],
+                          area.find_element_by_class_name('list-group').text)
+
+class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
+    """
+    Test for homepage elements when user visit the site with the inventory
+    containing items that already passed the purchase threshold.
+
+    """
+
+    test_data = [
+        # Item without purchase
+        {'name': 'test item A', },
+
+        # Item passed threshold
+        {'name': 'test item B',
+         'last_purchase': datetime.date.today() - datetime.timedelta(22), },
+
+        # Item purchased few weeks ago (in threshold, running out)
+        {'name': 'test item C',
+         'last_purchase': datetime.date.today() - datetime.timedelta(20), },
+
+        # Item purchased few days ago (in threshold, NOT running out)
+        {'name': 'test item D',
+         'last_purchase': datetime.date.today() - datetime.timedelta(11), },
+        {'name': 'test item E',
+         'last_purchase': datetime.date.today() - datetime.timedelta(9), },
+        {'name': 'test item F',
+         'last_purchase': datetime.date.today() - datetime.timedelta(5), },
+
+        # Same data with non-default threshold
+        {'name': 'test item G', 'purchase_threshold': 10,
+         'last_purchase': datetime.date.today() - datetime.timedelta(22), },
+        {'name': 'test item H', 'purchase_threshold': 10,
+         'last_purchase': datetime.date.today() - datetime.timedelta(20), },
+        {'name': 'test item I', 'purchase_threshold': 10,
+         'last_purchase': datetime.date.today() - datetime.timedelta(11), },
+        {'name': 'test item J', 'purchase_threshold': 10,
+         'last_purchase': datetime.date.today() - datetime.timedelta(9), },
+        {'name': 'test item K', 'purchase_threshold': 10,
+         'last_purchase': datetime.date.today() - datetime.timedelta(5), },
+    ]
+
+    def setUp(self):  # pylint: disable=I0011,E1002
+        """ Override parent method to populate context with Item data """
+
+        for item in self.test_data:
+            i = copy.copy(item)
+
+            if 'last_purchase' in i:
+                del i['last_purchase']
+
+            created_item = Item.objects.create(**i)
+
+            if 'last_purchase' in item:
+                Purchase.objects.create(item=created_item,
+                                        quantity=random.randrange(1, 11),
+                                        date=item['last_purchase'])
+
+        super(HomepageVisitWithThresholdPassedItemData, self).setUp()
+
+    def test_elements_in_right_column(self):
+        """
+        Verify all the required elements are available in homepage HTML.
+
+        """
+
+        # Shopper visit the site later with some items that already passed
+        # purchase threshold in the inventory.
+        #
+        # 1. Them message that was there before saying "no items" is now gone
+        area = self.browser.find_element_by_css_selector(
+            '.right-pane .to-buy')
+        self.assertNotIn('No items need buying', area.text)
+
+        # 2. The correct items are listed in the "Items Running Out" list.
+        self.assertIn('test item B',
+                      area.find_element_by_class_name('list-group').text)
+        self.assertIn('test item G',
+                      area.find_element_by_class_name('list-group').text)
+        self.assertIn('test item H',
+                      area.find_element_by_class_name('list-group').text)
+        self.assertIn('test item I',
+                      area.find_element_by_class_name('list-group').text)
+
+        for item in self.test_data:
+            if item['name'] in [
+                'test item B',
+                'test item G',
+                'test item H',
+                'test item I',
+            ]:
+                continue
+
+            self.assertNotIn(item['name'],
+                          area.find_element_by_class_name('list-group').text)
+
+        # 3. There's also a download button next to the "Items to Buy" header.
+        button = area.find_element_by_css_selector('.page-header button')
+
+        self.assertIn('fa-download',
+                      button.find_element_by_tag_name('i')
+                        .get_attribute('class'))

@@ -132,11 +132,11 @@ class ItemModelTest(TestCase):
 
         returned_items = Item.objects.running_out()
 
-        self.assertAlmostEqual(returned_items[0].stock_age, 18, delta=.9)
+        self.assertAlmostEqual(returned_items[0].stock_age, 18, delta=.99)
         self.assertEqual(returned_items[0].stock_age_percent,
                          returned_items[0].stock_age / 21 * 100)
 
-        self.assertAlmostEqual(returned_items[1].stock_age, 22, delta=.9)
+        self.assertAlmostEqual(returned_items[1].stock_age, 22, delta=.99)
         self.assertEqual(returned_items[1].stock_age_percent, 0)
 
         self.assertEqual(returned_items[2].name, 'c')

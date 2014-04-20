@@ -67,3 +67,29 @@ class HomepageTest(BaseUnitTestCase):
         self.assertEqual(type(response.context['running_out_list']),
                          type([]))
         self.assertEqual(len(response.context['running_out_list']), 1)
+        self.assertEqual(response.context['running_out_list'][0].name,
+                         'Test #2')
+
+    def test_receives_the_to_buy_list_via_context(self):
+        """
+        Homepage template should have the list of items need to be purchased in
+        it's context.
+
+        """
+
+        item = Item.objects.create(name='Test #1')
+        Purchase.objects.create(
+            item=item, date=datetime.date.today() - datetime.timedelta(22))
+
+        item = Item.objects.create(name='Test #2')
+        Purchase.objects.create(
+            item=item, date=datetime.date.today() - datetime.timedelta(16))
+
+        response = self.client.get(self.uri)
+
+        self.assertIn('to_buy_list', response.context)
+        self.assertEqual(type(response.context['to_buy_list']),
+                         type([]))
+        self.assertEqual(len(response.context['to_buy_list']), 1)
+        self.assertEqual(response.context['to_buy_list'][0].name,
+                         'Test #1')
