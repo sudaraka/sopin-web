@@ -49,6 +49,21 @@
                 </div>
 
                 {% if running_out_list %}
+                <ul class="list-group">
+                {% for item in running_out_list %}
+                    <li class="list-group-item">
+                        {{ item.name }}
+
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info"
+                                role="progress"
+                                aria-valuenow="{{ item.stock_age }}"
+                                aria-valuemax="{{ item.purchase_threshold|add:item.extended_threshold }}"
+                                style="width: {{ item.stock_age_percent }}%;"></div>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
                 {% else %}
                 No items running out
                 {% endif %}

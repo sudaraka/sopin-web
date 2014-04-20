@@ -109,12 +109,8 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
         # Same data with non-default threshold
         {'name': 'test item #7', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
-
-        # Item purchased few weeks ago (in threshold, running out)
         {'name': 'test item #8', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
-
-        # Item purchased few days ago (in threshold, NOT running out)
         {'name': 'test item #9', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
         {'name': 'test item #10', 'purchase_threshold': 10,
@@ -155,6 +151,10 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
             '.right-pane .running-out')
         self.assertNotIn('No items running out', area.text)
 
-        #
         # 2. The correct items are listed in the "Items Running Out" list.
-        self.assertTrue(False, 'FINISH FT')
+        self.assertIn('test item #3',
+                      area.find_element_by_class_name('list-group').text)
+        self.assertIn('test item #10',
+                      area.find_element_by_class_name('list-group').text)
+        self.assertIn('test item #11',
+                      area.find_element_by_class_name('list-group').text)

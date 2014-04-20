@@ -35,9 +35,21 @@ from data.models.inventory import Item
 def homepage_view(request):
     """ Process homepage url '/' and render the template 'home.html' """
 
+    running_out = []
+
+    for i in Item.objects.running_out():
+        if 0 == i.stock_age_percent:
+            pass
+        else:
+            running_out.append(i)
+
+    if 1 > len(running_out):
+        running_out = None
+
     return render(request, 'home.html', {'site_title': SITE_TITLE,
                                          'site_version': ('v%d.%d %s' %
-                                                          VERSION).strip()})
+                                                          VERSION).strip(),
+                                         'running_out_list': running_out})
 
 
 def item_maintenance_view(request):

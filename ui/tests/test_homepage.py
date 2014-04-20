@@ -18,7 +18,11 @@
 
 """ UI Unit test for homepage """
 
+import datetime
+
 from ui.tests.base import BaseUnitTestCase
+
+from data.models.inventory import Item, Purchase
 
 
 class HomepageTest(BaseUnitTestCase):
@@ -41,3 +45,25 @@ class HomepageTest(BaseUnitTestCase):
         """ Call base class function """
 
         self.site_version_is_being_passed_to_the_template()
+
+    def test_receives_the_running_out_list_via_context(self):
+        """
+        Homepage template should have the list of running out item records
+        instance in it's context.
+
+        """
+
+        item = Item.objects.create(name='Test #1')
+        Purchase.objects.create(
+            item=item, date=datetime.date.today() - datetime.timedelta(22))
+
+        item = Item.objects.create(name='Test #2')
+        Purchase.objects.create(
+            item=item, date=datetime.date.today() - datetime.timedelta(16))
+
+        response = self.client.get(self.uri)
+
+        self.assertIn('running_out_list', response.context)
+        self.assertEqual(type(response.context['running_out_list']),
+                         type([]))
+        self.assertEqual(len(response.context['running_out_list']), 1)
