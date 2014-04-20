@@ -41,6 +41,8 @@ class ItemModelTest(TestCase):
         self.assertEqual(item.purchase_threshold, 21)
         self.assertEqual(item.extended_threshold, 0)
         self.assertEqual(item.heavy, False)
+        self.assertEqual(item.stock_age, None)
+        self.assertEqual(item.stock_age_precent, 0)
 
     def test_saving_item_with_default_values(self):
         """ Test saving item records with default values """
@@ -110,6 +112,18 @@ class ItemModelTest(TestCase):
         self.assertEqual(item1.last_purchase(), item1_last_purchase)
         self.assertEqual(item2.last_purchase(), item2_last_purchase)
         self.assertEqual(Item.objects.get(pk=3).last_purchase(), None)
+
+    def test_running_out_item_stock_age_is_correctly_calculated(self):
+        """ Verify that running_out item's stock_age is correct """
+
+        item = Item.objects.create(name='a')
+
+        Purchase.objects.create(
+            item=item, date=datetime.date.today() - datetime.timedelta(18))
+
+        self.assertEqual(Item.objects.running_out()[0].stock_age, 18)
+        self.assertEqual(Item.objects.running_out()[0].stock_age_precent,
+                         18 / 21 * 100)
 
 
 class PurchaseModelTest(TestCase):
