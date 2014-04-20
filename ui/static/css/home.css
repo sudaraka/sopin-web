@@ -16,6 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .left-pane,
 .right-pane {
     display: block;
@@ -31,4 +37,13 @@
     background-color: #f8f8f8;
     border-left: 1px solid #eee;
     right: 0;
+}
+
+.right-pane button {
+    vertical-align: bottom;
+}
+
+.progress {
+    height: 4px;
+    margin-bottom: 0;
 }
