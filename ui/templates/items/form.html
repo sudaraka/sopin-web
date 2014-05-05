@@ -86,6 +86,14 @@
 $(function(){
 
     $('#item_form').validate({
+        rules: {
+            unit_weight: {
+                number: true
+            },
+            purchase_threshold: {
+                number: true
+            },
+        },
         messages: {
             name: 'Item name cannot be blank',
             unit_weight: {

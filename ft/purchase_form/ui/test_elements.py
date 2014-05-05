@@ -79,7 +79,7 @@ class PurchaseFormVisit(FunctionalTestBase):
 
         # 3. "Quantity" element with empty value
         element = self.browser. \
-            find_element_by_css_selector('input#id_quantity[type=number]')
+            find_element_by_css_selector('input#id_quantity')
         self.assertEqual('', element.get_attribute('value'))
 
         # She closes the pop-up form and click on the "purchase" button in
@@ -107,5 +107,5 @@ class PurchaseFormVisit(FunctionalTestBase):
 
         # 3. "Quantity" element with empty value
         element = self.browser. \
-            find_element_by_css_selector('input#id_quantity[type=number]')
+            find_element_by_css_selector('input#id_quantity')
         self.assertEqual('', element.get_attribute('value'))

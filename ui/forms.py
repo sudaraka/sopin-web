@@ -50,17 +50,14 @@ class ItemForm(forms.models.ModelForm):
             'unit_weight': forms.fields.TextInput(attrs={
                 'required': 'required',
                 'maxlength': 7,
-                'type': 'number',
-                'class': 'form-control',
+                'class': 'form-control number',
             }),
             'purchase_threshold': forms.fields.TextInput(attrs={
                 'required': 'required',
-                'type': 'number',
-                'class': 'form-control',
+                'class': 'form-control number',
             }),
             'extended_threshold': forms.fields.TextInput(attrs={
-                'type': 'number',
-                'class': 'form-control',
+                'class': 'form-control number',
             }),
             'heavy': forms.fields.TextInput(attrs={
                 'class': 'ull-left',
@@ -93,7 +90,6 @@ class PurchaseForm(forms.models.ModelForm):
             'quantity': forms.fields.TextInput(attrs={
                 'required': 'required',
                 'maxlength': 7,
-                'type': 'number',
-                'class': 'form-control',
+                'class': 'form-control number',
             }),
         }

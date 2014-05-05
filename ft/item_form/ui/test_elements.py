@@ -73,7 +73,7 @@ class AddItemPageVisit(FunctionalTestBase):
         self.assertEqual('Weight per Unit:', label.text)
 
         element = self.browser.find_element_by_css_selector(
-            'input#id_unit_weight[type=number]')
+            'input#id_unit_weight')
         self.assertEqual('7', element.get_attribute('maxlength'))
         self.assertEqual('1', element.get_attribute('value'))
 
@@ -95,7 +95,7 @@ class AddItemPageVisit(FunctionalTestBase):
         self.assertEqual('Purchase Threshold:', label.text)
 
         element = self.browser.find_element_by_css_selector(
-            'input#id_purchase_threshold[type=number]')
+            'input#id_purchase_threshold')
         self.assertEqual('21', element.get_attribute('value'))
 
         # 5. Label and input text box for "Threshold Extend" that shopper can
@@ -105,7 +105,7 @@ class AddItemPageVisit(FunctionalTestBase):
         self.assertEqual('Threshold Extend:', label.text)
 
         element = self.browser.find_element_by_css_selector(
-            'input#id_extended_threshold[type=number]')
+            'input#id_extended_threshold')
 
         # 6. Check box for heavy item with label text "this is a heavy item"
         label = self.browser.find_element_by_css_selector(
@@ -159,7 +159,7 @@ class EditItemPageVisit(FunctionalTestBase):
 
         # 2. "Weight per Unit" element with the value 23
         element = self.browser.find_element_by_css_selector(
-            'input#id_unit_weight[type=number]')
+            'input#id_unit_weight')
         self.assertEqual('1', element.get_attribute('value'))
 
         # 3. "Unit Symbol" element with value "Bottle"
@@ -169,12 +169,12 @@ class EditItemPageVisit(FunctionalTestBase):
 
         # 4. "Purchase Threshold" element with the value 40
         element = self.browser.find_element_by_css_selector(
-            'input#id_purchase_threshold[type=number]')
+            'input#id_purchase_threshold')
         self.assertEqual('21', element.get_attribute('value'))
 
         # 5. "Threshold Extend" element with value 3
         element = self.browser.find_element_by_css_selector(
-            'input#id_extended_threshold[type=number]')
+            'input#id_extended_threshold')
         self.assertEqual('0', element.get_attribute('value'))
 
         # 6. Check box "this is a heavy item" checked
@@ -201,7 +201,7 @@ class EditItemPageVisit(FunctionalTestBase):
 
         # 2. "Weight per Unit" element with the value 23
         element = self.browser.find_element_by_css_selector(
-            'input#id_unit_weight[type=number]')
+            'input#id_unit_weight')
         self.assertEqual('23', element.get_attribute('value'))
 
         # 3. "Unit Symbol" element with value "Bottle"
@@ -211,12 +211,12 @@ class EditItemPageVisit(FunctionalTestBase):
 
         # 4. "Purchase Threshold" element with the value 40
         element = self.browser.find_element_by_css_selector(
-            'input#id_purchase_threshold[type=number]')
+            'input#id_purchase_threshold')
         self.assertEqual('40', element.get_attribute('value'))
 
         # 5. "Threshold Extend" element with value 3
         element = self.browser.find_element_by_css_selector(
-            'input#id_extended_threshold[type=number]')
+            'input#id_extended_threshold')
         self.assertEqual('3', element.get_attribute('value'))
 
         # 6. Check box "this is a heavy item" checked
@@ -240,7 +240,7 @@ class EditItemPageVisit(FunctionalTestBase):
 
         # 2. "Weight per Unit" element with the value 23
         element = self.browser.find_element_by_css_selector(
-            'input#id_unit_weight[type=number]')
+            'input#id_unit_weight')
         self.assertEqual('23', element.get_attribute('value'))
 
         # 3. "Unit Symbol" element with value "Bottle"
@@ -250,12 +250,12 @@ class EditItemPageVisit(FunctionalTestBase):
 
         # 4. "Purchase Threshold" element with the value 40
         element = self.browser.find_element_by_css_selector(
-            'input#id_purchase_threshold[type=number]')
+            'input#id_purchase_threshold')
         self.assertEqual('40', element.get_attribute('value'))
 
         # 5. "Threshold Extend" element with value 3
         element = self.browser.find_element_by_css_selector(
-            'input#id_extended_threshold[type=number]')
+            'input#id_extended_threshold')
         self.assertEqual('3', element.get_attribute('value'))
 
         # 6. Check box "this is a heavy item" checked
