@@ -52,7 +52,7 @@ class ItemsPageVisit(FunctionalTestBase):
         self.browser.find_element_by_id('btn_new_item').click()
 
         # wait for the animation
-        sleep(.1)
+        sleep(.2)
 
         modal = self.browser.find_element_by_id('div_modal_form')
         self.assertTrue(modal.is_displayed())
@@ -95,7 +95,7 @@ class ItemsPageVisitWithData(FunctionalTestBase):
             '.items-table table tr:nth-child(1) button.btn-edit').click()
 
         # wait for the animation
-        sleep(.1)
+        sleep(.2)
 
         modal = self.browser.find_element_by_id('div_modal_form')
 
