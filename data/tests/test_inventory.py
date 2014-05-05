@@ -146,6 +146,21 @@ class ItemModelTest(TestCase):
         self.assertEqual(returned_items[2].extended_threshold, 0)
         self.assertEqual(returned_items[2].heavy, True)
 
+    def test_items_with_no_purchase_records_must_be_in_running_out_list(self):
+        """
+        Verify items that have never been purchased before show up in the
+        running_out list
+
+        """
+
+        item = Item.objects.create(name='a')
+
+        returned_items = Item.objects.running_out()
+
+        self.assertIn(item, returned_items)
+        self.assertEqual(returned_items[0].stock_age, -1)
+        self.assertEqual(returned_items[0].stock_age_percent, 0)
+
 
 class PurchaseModelTest(TestCase):
     """ Test "Purchase" data model """

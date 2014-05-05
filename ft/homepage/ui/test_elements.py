@@ -167,8 +167,10 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
             ]:
                 continue
 
-            self.assertNotIn(item['name'],
-                          area.find_element_by_class_name('list-group').text)
+            self.assertNotIn(
+                item['name'],
+                area.find_element_by_class_name('list-group').text)
+
 
 class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
     """
@@ -243,6 +245,8 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
         self.assertNotIn('No items need buying', area.text)
 
         # 2. The correct items are listed in the "Items Running Out" list.
+        self.assertIn('test item A',
+                      area.find_element_by_class_name('list-group').text)
         self.assertIn('test item B',
                       area.find_element_by_class_name('list-group').text)
         self.assertIn('test item G',
@@ -254,6 +258,7 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
 
         for item in self.test_data:
             if item['name'] in [
+                'test item A',
                 'test item B',
                 'test item G',
                 'test item H',
@@ -261,12 +266,13 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
             ]:
                 continue
 
-            self.assertNotIn(item['name'],
-                          area.find_element_by_class_name('list-group').text)
+            self.assertNotIn(
+                item['name'],
+                area.find_element_by_class_name('list-group').text)
 
         # 3. There's also a download button next to the "Items to Buy" header.
         button = area.find_element_by_css_selector('.page-header button')
 
-        self.assertIn('fa-download',
-                      button.find_element_by_tag_name('i')
-                        .get_attribute('class'))
+        self.assertIn(
+            'fa-download',
+            button.find_element_by_tag_name('i').get_attribute('class'))

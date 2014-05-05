@@ -47,14 +47,16 @@ class ItemManager(models.Manager):
                 i.purchase_threshold,
                 i.extended_threshold,
                 i.heavy,
-                julianday('now') - julianday(max(p.date)) as stock_days
+                ifnull(julianday('now') - julianday(max(p.date)), -1)
+                    as stock_days
             from
                 sopin_item as i
-            inner join sopin_purchase as p
+            left join sopin_purchase as p
                 on p.item_id = i.id
             group by
                 i.id
             having
+                stock_days = -1 or
                 (i.purchase_threshold + i.extended_threshold - stock_days) < %d
             order by
                 stock_days asc
@@ -67,7 +69,7 @@ class ItemManager(models.Manager):
                               extended_threshold=i[5], heavy=i[6])
             item.stock_age = i[7]
 
-            if i[7] < i[4] + i[5]:
+            if 0 < i[7] and i[7] < i[4] + i[5]:
                 item.stock_age_percent = i[7] / (i[4] + i[5]) * 100
 
             result.append(item)
