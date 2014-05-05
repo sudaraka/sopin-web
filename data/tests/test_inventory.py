@@ -161,6 +161,27 @@ class ItemModelTest(TestCase):
         self.assertEqual(returned_items[0].stock_age, -1)
         self.assertEqual(returned_items[0].stock_age_percent, 0)
 
+    def test_multi_quantity_purchase_calculate_running_out_state_right(self):
+        """
+        Purchasing multiple quantities (two or more) should calculate the stock
+        and running out status correctly by extending the purchase threshold
+        proportional to the quantity.
+
+        """
+
+        DAYS_BEFORE = 40
+
+        item = Item.objects.create(name='a')
+        Purchase.objects.create(
+            item=item, quantity=2,
+            date=datetime.date.today() - datetime.timedelta(DAYS_BEFORE))
+
+        returned_item = Item.objects.running_out()[0]
+
+        self.assertAlmostEqual(returned_item.stock_age, DAYS_BEFORE, delta=.99)
+        self.assertAlmostEqual(returned_item.stock_age_percent, 95.24,
+                               delta=1.99)
+
 
 class PurchaseModelTest(TestCase):
     """ Test "Purchase" data model """

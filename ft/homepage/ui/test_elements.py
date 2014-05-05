@@ -24,7 +24,6 @@ states.
 
 import copy
 import datetime
-import random
 
 from ft.base import FunctionalTestBase
 
@@ -98,6 +97,10 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
         {'name': 'test item C',
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
 
+        # 2 Items purchased few weeks ago (NOT in threshold, NOT running out)
+        {'name': 'test item C2', 'quantity': 2,
+         'last_purchase': datetime.date.today() - datetime.timedelta(20), },
+
         # Item purchased few days ago (in threshold, NOT running out)
         {'name': 'test item D',
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
@@ -115,6 +118,8 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
         {'name': 'test item J', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
+        {'name': 'test item J2', 'purchase_threshold': 10, 'quantity': 2,
+         'last_purchase': datetime.date.today() - datetime.timedelta(9), },
         {'name': 'test item K', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
     ]
@@ -127,12 +132,19 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
 
             if 'last_purchase' in i:
                 del i['last_purchase']
+                if 'quantity' in i:
+                    del i['quantity']
 
             created_item = Item.objects.create(**i)
 
             if 'last_purchase' in item:
+                qty = 1
+
+                if 'quantity' in item:
+                    qty = item['quantity']
+
                 Purchase.objects.create(item=created_item,
-                                        quantity=random.randrange(1, 11),
+                                        quantity=qty,
                                         date=item['last_purchase'])
 
         super(HomepageVisitWithRunningOutItemData, self).setUp()
@@ -187,6 +199,10 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
         {'name': 'test item B',
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
 
+        # 2 Items purchased (should not need to buy)
+        {'name': 'test item B2', 'quantity': 2,
+         'last_purchase': datetime.date.today() - datetime.timedelta(22), },
+
         # Item purchased few weeks ago (in threshold, running out)
         {'name': 'test item C',
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
@@ -201,6 +217,8 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
 
         # Same data with non-default threshold
         {'name': 'test item G', 'purchase_threshold': 10,
+         'last_purchase': datetime.date.today() - datetime.timedelta(22), },
+        {'name': 'test item G2', 'purchase_threshold': 10, 'quantity': 3,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
         {'name': 'test item H', 'purchase_threshold': 10,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
@@ -220,12 +238,19 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
 
             if 'last_purchase' in i:
                 del i['last_purchase']
+                if 'quantity' in i:
+                    del i['quantity']
 
             created_item = Item.objects.create(**i)
 
             if 'last_purchase' in item:
+                qty = 1
+
+                if 'quantity' in item:
+                    qty = item['quantity']
+
                 Purchase.objects.create(item=created_item,
-                                        quantity=random.randrange(1, 11),
+                                        quantity=qty,
                                         date=item['last_purchase'])
 
         super(HomepageVisitWithThresholdPassedItemData, self).setUp()
@@ -244,7 +269,7 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
             '.right-pane .to-buy')
         self.assertNotIn('No items need buying', area.text)
 
-        # 2. The correct items are listed in the "Items Running Out" list.
+        # 2. The correct items are listed in the "Items to Buy" list.
         self.assertIn('test item A',
                       area.find_element_by_class_name('list-group').text)
         self.assertIn('test item B',
