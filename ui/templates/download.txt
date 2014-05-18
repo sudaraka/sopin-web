@@ -1,0 +1,4 @@
+{% spaceless%}
+{% if to_buy_list %}
+{% for item in to_buy_list %}
+[] {{ item.name }}{% endfor %}{% endif %}{% endspaceless%}

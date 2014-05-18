@@ -18,6 +18,8 @@
 
 """ Homepage views """
 
+import datetime
+
 from django.shortcuts import render
 
 from app.settings import SITE_TITLE, VERSION
@@ -48,3 +50,23 @@ def default_view(request):
                    'site_version': ('v%d.%d %s' % VERSION).strip(),
                    'running_out_list': running_out,
                    'to_buy_list': to_buy, })
+
+
+def download_to_buy_view(request):
+    """ Out put "to buy" list as downloadable text file """
+
+    to_buy = []
+
+    for i in Item.objects.running_out():
+        if 0 == i.stock_age_percent:
+            to_buy.append(i)
+
+    if 1 > len(to_buy):
+        to_buy = None
+
+    response = render(request, 'download.txt', {'to_buy_list': to_buy, })
+    response['content-type'] = 'application/octet-stream'
+    response['content-disposition'] = 'filename=shopping-list-%s.txt' % (
+        datetime.date.today().strftime('%Y-%m-%d'), )
+
+    return response

@@ -34,9 +34,9 @@
                     <h3 class="col-xs-9">Items to Buy</h3>
 
                     {% if to_buy_list %}
-                    <button type="button" class="btn btn-warning">
+                    <a href="{% url 'download_to_buy' %}" type="button" class="btn btn-warning">
                         <i class="fa fa-download"></i>
-                    </button>
+                    </a>
                     {% endif %}
 
                     <div class="clearfix"></div>

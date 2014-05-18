@@ -25,6 +25,8 @@ urlpatterns = patterns(
 
     # Home page
     url(r'^$', 'views.homepage.default_view', name='homepage'),
+    url(r'^download-to-buy/$', 'views.homepage.download_to_buy_view',
+        name='download_to_buy'),
 
     # Item maintenance
     url(r'^item-maintenance/$', 'views.item.list_view',
