@@ -1,4 +1,4 @@
-#  ui/views.py: UI views for the web site
+#  ui/views/item.py: UI views for the item maintenance page
 #
 #  Copyright 2014 Sudaraka Wijesinghe <sudaraka.org/contact>
 #
@@ -16,49 +16,22 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-""" UI views """
+""" Item maintenance views """
 
 import json
 
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.utils.datastructures import MultiValueDictKeyError
 
 from app.settings import SITE_TITLE, VERSION
 
-from ui.forms import ItemForm, PurchaseForm
+from ui.forms import ItemForm
 
 from data.models.inventory import Item
 
 
-def homepage_view(request):
-    """ Process homepage url '/' and render the template 'home.html' """
-
-    running_out = []
-    to_buy = []
-
-    for i in Item.objects.running_out():
-        if 0 == i.stock_age_percent:
-            to_buy.append(i)
-        else:
-            running_out.append(i)
-
-    if 1 > len(running_out):
-        running_out = None
-
-    if 1 > len(to_buy):
-        to_buy = None
-
-    return render(request, 'home.html', {'site_title': SITE_TITLE,
-                                         'site_version': ('v%d.%d %s' %
-                                                          VERSION).strip(),
-                                         'running_out_list': running_out,
-                                         'to_buy_list': to_buy,
-                                         })
-
-
-def item_maintenance_view(request):
+def list_view(request):
     """
     Process items maintenance url '/item-maintenance' and render the template
     'items.html'
@@ -75,7 +48,7 @@ def item_maintenance_view(request):
                   })
 
 
-def item_maintenance_form(request, itemid=''):
+def form_view(request, itemid=''):
     """
     Render item maintenance (add/edit) form, and handle the submitted data.
 
@@ -108,7 +81,7 @@ def item_maintenance_form(request, itemid=''):
     return render(request, 'items/form.html', {'form': form})
 
 
-def item_maintenance_delete(request, itemid=''):
+def remove(request, itemid=''):
     """
     Remove selected item from the database and redirect to item maintenance
     page.
@@ -128,37 +101,3 @@ def item_maintenance_delete(request, itemid=''):
         messages.error(request, e)
 
     return redirect('item_maintenance')
-
-
-def item_purchase_form(request):
-    """ Render item purchase form, and handle the submitted data. """
-
-    form = None
-    item = Item()
-
-    if 'POST' == request.method:
-        form = PurchaseForm(data=request.POST)
-
-        if form.is_valid():  # pragma: no branch
-            form.save()
-
-            result = {
-                'code': 0,
-                'message': 'success',
-            }
-
-            return HttpResponse(json.dumps(result),
-                                content_type='application/json')
-    else:
-        try:
-            itemid = int(request.GET['item'])
-            if 0 < itemid:
-                item = Item.objects.get(pk=itemid)
-                form = PurchaseForm(data={'item': item})
-        except Item.DoesNotExist:
-            pass
-        except MultiValueDictKeyError:
-            pass
-
-    return render(request, 'items/purchase.html', {'form': form,
-                                                   'item': item})

@@ -22,13 +22,19 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     'ui',
-    url(r'^$', 'views.homepage_view', name='homepage'),
-    url(r'^item-maintenance/$', 'views.item_maintenance_view',
+
+    # Home page
+    url(r'^$', 'views.homepage.default_view', name='homepage'),
+
+    # Item maintenance
+    url(r'^item-maintenance/$', 'views.item.list_view',
         name='item_maintenance'),
     url(r'^item-maintenance/form(?:/(?P<itemid>\d+))?/$',
-        'views.item_maintenance_form', name='item_maintenance_form'),
+        'views.item.form_view', name='item_maintenance_form'),
     url(r'^item-maintenance/remove/(?P<itemid>\d+)/$',
-        'views.item_maintenance_delete', name='item_maintenance_delete'),
+        'views.item.remove', name='item_maintenance_delete'),
+
+    # Purchase
     url(r'^item-maintenance/purchase/$',
-        'views.item_purchase_form', name='item_purchase_form'),
+        'views.purchase.form_view', name='item_purchase_form'),
 )
