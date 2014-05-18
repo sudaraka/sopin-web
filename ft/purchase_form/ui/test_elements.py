@@ -27,8 +27,6 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
-from data.models.inventory import Item
-
 
 class PurchaseFormVisit(FunctionalTestBase):
     """
@@ -39,20 +37,12 @@ class PurchaseFormVisit(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
-    test_data = [
+    test_data_items = [
         {'name': 'TEST #1', },
         {'name': 'TEST #3', },
         {'name': 'TEST #2', 'unit_symbol': 'Bottle', 'unit_weight': 23,
          'purchase_threshold': 40, 'extended_threshold': 3, 'heavy': True, },
     ]
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        for item in self.test_data:
-            Item.objects.create(**item)
-
-        super(PurchaseFormVisit, self).setUp()
 
     def test_elements_with_no_user_generated_content(self):
         """

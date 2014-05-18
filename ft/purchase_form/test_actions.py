@@ -30,8 +30,6 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
-from data.models.inventory import Item
-
 
 class ItemPurchaseFormVisit(FunctionalTestBase):
     """
@@ -42,18 +40,10 @@ class ItemPurchaseFormVisit(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
-    test_data = [
+    test_data_items = [
         {'name': 'test item #1', 'extended_threshold': 5, },
         {'name': 'test item #2', },
     ]
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        for item in self.test_data:
-            Item.objects.create(**item)
-
-        super(ItemPurchaseFormVisit, self).setUp()
 
     def test_submitting_form_blank_fields_show_the_error_messages(self):
         """
@@ -135,6 +125,7 @@ class ItemPurchaseFormVisit(FunctionalTestBase):
                       self.browser.find_element_by_css_selector(
                           '.items-table tbody tr:nth-child(1) .last_purchase')
                       .text)
-        self.assertEqual('21 days', self.browser.find_element_by_css_selector(
-            '.items-table tbody tr:nth-child(1) ' + '.purchase_threshold')
-            .text)
+        self.assertEqual('21 days',
+                         self.browser.find_element_by_css_selector(
+                             '.items-table tbody tr:nth-child(1) ' +
+                             '.purchase_threshold').text)

@@ -22,9 +22,7 @@ different states.
 
 """
 
-import copy
 import datetime
-import random
 
 from operator import itemgetter
 
@@ -32,7 +30,7 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
-from data.models.inventory import Item, Purchase
+from data.models.inventory import Item
 
 
 class ItemsPageVisit(FunctionalTestBase):
@@ -82,7 +80,7 @@ class ItemsPageVisitWithData(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
-    test_data = [
+    test_data_items = [
         {'name': 'TEST #1', },
         {'name': 'TEST #2', 'unit_symbol': 'Bottel', 'heavy': True,
          'last_purchase': datetime.date(2013, 9, 28)},
@@ -92,24 +90,6 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         {'name': 'TEST #3', 'unit_weight': 400, 'purchase_threshold': 15,
          'extended_threshold': 4, 'heavy': True, },
     ]
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        for item in self.test_data:
-            i = copy.copy(item)
-
-            if 'last_purchase' in i:
-                del i['last_purchase']
-
-            created_item = Item.objects.create(**i)
-
-            if 'last_purchase' in item:
-                Purchase.objects.create(item=created_item,
-                                        quantity=random.randrange(1, 11),
-                                        date=item['last_purchase'])
-
-        super(ItemsPageVisitWithData, self).setUp()
 
     def test_elements_with_item_records(self):
         """ Verify that all page elements are present with item records """
@@ -131,7 +111,7 @@ class ItemsPageVisitWithData(FunctionalTestBase):
 
         stored_items = Item.objects.all().values()
 
-        check_list = sorted(self.test_data, key=itemgetter('name'))
+        check_list = sorted(self.test_data_items, key=itemgetter('name'))
         for item in check_list:
             row_index = check_list.index(item) + 1
 
@@ -175,8 +155,9 @@ class ItemsPageVisitWithData(FunctionalTestBase):
                 'tbody tr:nth-child(%d) .btn-edit' % row_index)
 
             self.assertEqual(reverse('item_maintenance_form',
-                                     args=(stored_items[row_index - 1]['id'],
-                                           )),
+                                     args=(
+                                         stored_items[row_index - 1]['id'],
+                                     )),
                              button.get_attribute('data-remote'))
 
             # Test Delete button
@@ -184,8 +165,9 @@ class ItemsPageVisitWithData(FunctionalTestBase):
                 'tbody tr:nth-child(%d) .btn-delete' % row_index)
 
             self.assertEqual(reverse('item_maintenance_delete',
-                                     args=(stored_items[row_index - 1]['id'],
-                                           )),
+                                     args=(
+                                         stored_items[row_index - 1]['id'],
+                                     )),
                              button.get_attribute('data-url'))
 
             # Test Purchase button

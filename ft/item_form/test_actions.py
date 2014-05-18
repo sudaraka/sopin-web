@@ -27,8 +27,6 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
-from data.models.inventory import Item
-
 
 class ItemAddFormVisit(FunctionalTestBase):
     """
@@ -157,18 +155,10 @@ class ItemEditFormVisit(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
-    test_data = [
+    test_data_items = [
         {'name': 'test item #1', },
         {'name': 'test item #2', },
     ]
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        for item in self.test_data:
-            Item.objects.create(**item)
-
-        super(ItemEditFormVisit, self).setUp()
 
     def test_edited_form_items_show_up_in_the_items_table(self):
         """

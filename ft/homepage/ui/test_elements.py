@@ -22,12 +22,9 @@ states.
 
 """
 
-import copy
 import datetime
 
 from ft.base import FunctionalTestBase
-
-from data.models.inventory import Item, Purchase
 
 
 class HomepageFirstVisit(FunctionalTestBase):
@@ -85,16 +82,16 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
 
     """
 
-    test_data = [
+    test_data_items = [
         # Item without purchase
         {'name': 'test item A', },
 
         # Item passed threshold
-        {'name': 'test item B',
+        {'name': 'test item B', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
 
         # Item purchased few weeks ago (in threshold, running out)
-        {'name': 'test item C',
+        {'name': 'test item C', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
 
         # 2 Items purchased few weeks ago (NOT in threshold, NOT running out)
@@ -102,52 +99,27 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
 
         # Item purchased few days ago (in threshold, NOT running out)
-        {'name': 'test item D',
+        {'name': 'test item D', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
-        {'name': 'test item E',
+        {'name': 'test item E', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
-        {'name': 'test item F',
+        {'name': 'test item F', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
 
         # Same data with non-default threshold
-        {'name': 'test item G', 'purchase_threshold': 10,
+        {'name': 'test item G', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
-        {'name': 'test item H', 'purchase_threshold': 10,
+        {'name': 'test item H', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
-        {'name': 'test item I', 'purchase_threshold': 10,
+        {'name': 'test item I', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
-        {'name': 'test item J', 'purchase_threshold': 10,
+        {'name': 'test item J', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
         {'name': 'test item J2', 'purchase_threshold': 10, 'quantity': 2,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
-        {'name': 'test item K', 'purchase_threshold': 10,
+        {'name': 'test item K', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
     ]
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        for item in self.test_data:
-            i = copy.copy(item)
-
-            if 'last_purchase' in i:
-                del i['last_purchase']
-                if 'quantity' in i:
-                    del i['quantity']
-
-            created_item = Item.objects.create(**i)
-
-            if 'last_purchase' in item:
-                qty = 1
-
-                if 'quantity' in item:
-                    qty = item['quantity']
-
-                Purchase.objects.create(item=created_item,
-                                        quantity=qty,
-                                        date=item['last_purchase'])
-
-        super(HomepageVisitWithRunningOutItemData, self).setUp()
 
     def test_elements_in_right_column(self):
         """
@@ -171,12 +143,8 @@ class HomepageVisitWithRunningOutItemData(FunctionalTestBase):
         self.assertIn('test item K',
                       area.find_element_by_class_name('list-group').text)
 
-        for item in self.test_data:
-            if item['name'] in [
-                'test item C',
-                'test item J',
-                'test item K',
-            ]:
+        for item in self.test_data_items:
+            if item['name'] in ['test item C', 'test item J', 'test item K', ]:
                 continue
 
             self.assertNotIn(
@@ -191,12 +159,12 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
 
     """
 
-    test_data = [
+    test_data_items = [
         # Item without purchase
         {'name': 'test item A', },
 
         # Item passed threshold
-        {'name': 'test item B',
+        {'name': 'test item B', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
 
         # 2 Items purchased (should not need to buy)
@@ -204,56 +172,31 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
 
         # Item purchased few weeks ago (in threshold, running out)
-        {'name': 'test item C',
+        {'name': 'test item C', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
 
         # Item purchased few days ago (in threshold, NOT running out)
-        {'name': 'test item D',
+        {'name': 'test item D', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
-        {'name': 'test item E',
+        {'name': 'test item E', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
-        {'name': 'test item F',
+        {'name': 'test item F', 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
 
         # Same data with non-default threshold
-        {'name': 'test item G', 'purchase_threshold': 10,
+        {'name': 'test item G', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
         {'name': 'test item G2', 'purchase_threshold': 10, 'quantity': 3,
          'last_purchase': datetime.date.today() - datetime.timedelta(22), },
-        {'name': 'test item H', 'purchase_threshold': 10,
+        {'name': 'test item H', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(20), },
-        {'name': 'test item I', 'purchase_threshold': 10,
+        {'name': 'test item I', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(11), },
-        {'name': 'test item J', 'purchase_threshold': 10,
+        {'name': 'test item J', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(9), },
-        {'name': 'test item K', 'purchase_threshold': 10,
+        {'name': 'test item K', 'purchase_threshold': 10, 'quantity': 1,
          'last_purchase': datetime.date.today() - datetime.timedelta(5), },
     ]
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        for item in self.test_data:
-            i = copy.copy(item)
-
-            if 'last_purchase' in i:
-                del i['last_purchase']
-                if 'quantity' in i:
-                    del i['quantity']
-
-            created_item = Item.objects.create(**i)
-
-            if 'last_purchase' in item:
-                qty = 1
-
-                if 'quantity' in item:
-                    qty = item['quantity']
-
-                Purchase.objects.create(item=created_item,
-                                        quantity=qty,
-                                        date=item['last_purchase'])
-
-        super(HomepageVisitWithThresholdPassedItemData, self).setUp()
 
     def test_elements_in_right_column(self):
         """
@@ -281,14 +224,9 @@ class HomepageVisitWithThresholdPassedItemData(FunctionalTestBase):
         self.assertIn('test item I',
                       area.find_element_by_class_name('list-group').text)
 
-        for item in self.test_data:
-            if item['name'] in [
-                'test item A',
-                'test item B',
-                'test item G',
-                'test item H',
-                'test item I',
-            ]:
+        for item in self.test_data_items:
+            if item['name'] in ['test item A', 'test item B', 'test item G',
+                                'test item H', 'test item I', ]:
                 continue
 
             self.assertNotIn(

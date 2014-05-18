@@ -18,6 +18,8 @@
 
 """ Shared sub-routines and initialization code for Functional Tests """
 
+import copy
+import random
 import sys
 from time import sleep
 
@@ -27,6 +29,8 @@ from django.core.urlresolvers import reverse
 from selenium import webdriver
 
 from app.settings import SITE_TITLE, VERSION
+
+from data.models.inventory import Item, Purchase
 
 
 class FunctionalTestBase(LiveServerTestCase):
@@ -38,6 +42,11 @@ class FunctionalTestBase(LiveServerTestCase):
     # When test_uri contains a non None value, browser will be navigate to
     # server_url + test_uri.
     test_uri = None
+
+    # When sub-classes override this member with dict list of item data, the
+    # test environment context/database will be populated with the before
+    # running the test.
+    test_data_items = None
 
     @classmethod
     def setUpClass(cls):
@@ -65,6 +74,8 @@ class FunctionalTestBase(LiveServerTestCase):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
         self.browser.set_window_size(1024, 768)
+
+        self._populate_item_table()
 
         url = self.server_url
 
@@ -212,3 +223,29 @@ class FunctionalTestBase(LiveServerTestCase):
         sleep(.1)
 
         return self.browser.find_element_by_id('div_item_delete')
+
+    def _populate_item_table(self):
+        """ Populate context with Item data """
+
+        if self.test_data_items is None:
+            return
+
+        for item in self.test_data_items:
+            i = copy.copy(item)
+
+            if 'last_purchase' in i:
+                del i['last_purchase']
+                if 'quantity' in i:
+                    del i['quantity']
+
+            created_item = Item.objects.create(**i)
+
+            if 'last_purchase' in item:
+                qty = random.randrange(1, 11)
+
+                if 'quantity' in item:
+                    qty = item['quantity']
+
+                Purchase.objects.create(item=created_item,
+                                        quantity=qty,
+                                        date=item['last_purchase'])

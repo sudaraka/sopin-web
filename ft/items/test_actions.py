@@ -29,8 +29,6 @@ from django.core.urlresolvers import reverse
 
 from ft.base import FunctionalTestBase
 
-from data.models.inventory import Item
-
 
 class ItemsPageVisit(FunctionalTestBase):
     """
@@ -68,19 +66,11 @@ class ItemsPageVisitWithData(FunctionalTestBase):
 
     test_uri = reverse('item_maintenance')
 
-    test_data = []
-
-    def setUp(self):  # pylint: disable=I0011,E1002
-        """ Override parent method to populate context with Item data """
-
-        self.test_data = [
-            Item.objects.create(name='test item #1', extended_threshold=4),
-            Item.objects.create(name='test item #3', unit_symbol='Bottle'),
-            Item.objects.create(name='test item #2', unit_weight=5000,
-                                heavy=True),
-        ]
-
-        super(ItemsPageVisitWithData, self).setUp()
+    test_data_items = [
+        {'name': 'test item #1', 'extended_threshold': 4},
+        {'name': 'test item #3', 'unit_symbol': 'Bottle'},
+        {'name': 'test item #2', 'unit_weight': 5000, 'heavy': True},
+    ]
 
     def test_edit_button_displays_form_popup_with_record_information(self):
         """
@@ -115,7 +105,7 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         modal = self.open_delete_confirmation_dialog(2)
 
         self.assertTrue(modal.is_displayed())
-        self.assertIn('Remove item ' + self.test_data[2].name + '?',
+        self.assertIn('Remove item ' + self.test_data_items[2]['name'] + '?',
                       modal.text)
 
     def test_no_button_on_confirmation_popup_closes_it_without_change(self):
@@ -135,8 +125,8 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         table = self.browser.find_element_by_css_selector(
             '.items-table table tbody')
 
-        for i in self.test_data:
-            self.assertIn(i.name, table.text)
+        for i in self.test_data_items:
+            self.assertIn(i['name'], table.text)
 
     def test_yes_button_on_confirmation_popup_removes_the_item_from_list(self):
         """
@@ -154,11 +144,11 @@ class ItemsPageVisitWithData(FunctionalTestBase):
         table = self.browser.find_element_by_css_selector(
             '.items-table table tbody')
 
-        for i in self.test_data:
-            if self.test_data.index(i) == 0:
-                self.assertNotIn(i.name, table.text)
+        for i in self.test_data_items:
+            if self.test_data_items.index(i) == 0:
+                self.assertNotIn(i['name'], table.text)
             else:
-                self.assertIn(i.name, table.text)
+                self.assertIn(i['name'], table.text)
 
         self.assertIn('Item was successfully removed',
                       self.browser.find_element_by_css_selector(
