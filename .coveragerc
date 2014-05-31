@@ -3,7 +3,7 @@
 [run]
 branch = True
 data_file = ../var/coverage/data
-omit = */site-packages/*, */manage.py, */tests/*, */ft/*
+omit = */site-packages/*, */manage.py, */tests/*, */ft/*, */migrations/*
 
 [html]
 directory = ../var/coverage
