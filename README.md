@@ -1,19 +1,15 @@
-sopin-web
-=========
+# sopin-web
 
-Web application designed to support to plan and keep track of a Single
-Household Shopping.
+Web application designed to plan and keep track of a single household shopping
 
 Copyright 2014 [Sudaraka Wijesinghe] [url_contact].
 
-Dependencies
-------------
+## Dependencies
 
 * Python 3.x
 * Django 1.6.x
 
-License
--------
+## License
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
