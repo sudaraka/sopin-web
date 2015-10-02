@@ -32,6 +32,7 @@ class ItemForm(forms.models.ModelForm):
         """ Meta class for add/edit form """
 
         model = Item
+        exclude = []
         labels = {
             'unit_weight': 'Weight per Unit',
             'unit_symbol': 'Unit Symbol',
@@ -74,6 +75,7 @@ class PurchaseForm(forms.models.ModelForm):
         """ Meta class for item puchase form """
 
         model = Purchase
+        exclude = []
         labels = {
             'date': 'Date',
             'quantity': 'Quantity',
